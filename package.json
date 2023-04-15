@@ -1,0 +1,19 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "http": "ngrok http 3000",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "devDependencies": {
+    "ngrok": "^4.3.3",
+    "nuxt": "^3.4.1"
+  },
+  "dependencies": {
+    "@line/liff": "^2.22.0"
+  }
+}
