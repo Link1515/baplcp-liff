@@ -13,7 +13,9 @@
         <NuxtLink to="/events" class="grid place-items-center bg-slate-300 py-2"
           >活動清單</NuxtLink
         >
-        <NuxtLink to="/admin" class="grid place-items-center bg-slate-300 py-2"
+        <NuxtLink
+          to="/admin/events"
+          class="grid place-items-center bg-slate-300 py-2"
           >活動管理</NuxtLink
         >
       </div>
