@@ -10,8 +10,13 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
+    "autoprefixer": "^10.4.14",
     "ngrok": "^4.3.3",
-    "nuxt": "^3.4.1"
+    "nuxt": "^3.4.1",
+    "postcss": "^8.4.21",
+    "prettier": "^2.8.7",
+    "prettier-plugin-tailwindcss": "^0.2.7",
+    "tailwindcss": "^3.3.1"
   },
   "dependencies": {
     "@line/liff": "^2.22.0"
