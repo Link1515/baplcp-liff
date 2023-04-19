@@ -4,6 +4,9 @@ dependencies:
   '@line/liff':
     specifier: ^2.22.0
     version: 2.22.0
+  '@prisma/client':
+    specifier: ^4.13.0
+    version: 4.13.0(prisma@4.12.0)
 
 devDependencies:
   autoprefixer:
@@ -24,6 +27,9 @@ devDependencies:
   prettier-plugin-tailwindcss:
     specifier: ^0.2.7
     version: 0.2.7(prettier@2.8.7)
+  prisma:
+    specifier: ^4.12.0
+    version: 4.12.0
   tailwindcss:
     specifier: ^3.3.1
     version: 3.3.1(postcss@8.4.21)
@@ -1405,6 +1411,28 @@ packages:
       - vti
       - vue-tsc
     dev: true
+
+  /@prisma/client@4.13.0(prisma@4.12.0):
+    resolution: {integrity: sha512-YaiiICcRB2hatxsbnfB66uWXjcRw3jsZdlAVxmx0cFcTc/Ad/sKdHCcWSnqyDX47vAewkjRFwiLwrOUjswVvmA==}
+    engines: {node: '>=14.17'}
+    requiresBuild: true
+    peerDependencies:
+      prisma: '*'
+    peerDependenciesMeta:
+      prisma:
+        optional: true
+    dependencies:
+      '@prisma/engines-version': 4.13.0-50.1e7af066ee9cb95cf3a403c78d9aab3e6b04f37a
+      prisma: 4.12.0
+    dev: false
+
+  /@prisma/engines-version@4.13.0-50.1e7af066ee9cb95cf3a403c78d9aab3e6b04f37a:
+    resolution: {integrity: sha512-fsQlbkhPJf08JOzKoyoD9atdUijuGBekwoOPZC3YOygXEml1MTtgXVpnUNchQlRSY82OQ6pSGQ9PxUe4arcSLQ==}
+    dev: false
+
+  /@prisma/engines@4.12.0:
+    resolution: {integrity: sha512-0alKtnxhNB5hYU+ymESBlGI4b9XrGGSdv7Ud+8TE/fBNOEhIud0XQsAR+TrvUZgS4na5czubiMsODw0TUrgkIA==}
+    requiresBuild: true
 
   /@rollup/plugin-alias@5.0.0(rollup@3.20.2):
     resolution: {integrity: sha512-l9hY5chSCjuFRPsnRm16twWBiSApl2uYFLsepQYwtBuAxNMQ/1dJqADld40P0Jkqm65GRTLy/AC6hnpVebtLsA==}
@@ -4802,6 +4830,14 @@ packages:
     resolution: {integrity: sha512-Rk753HI8f4uivXi4ZCIYdhmG1V+WKzvRMg/X+M42a6t7D07RcmopXJMDNk6N++7Bl75URRGsb40ruvg7Hcp2wQ==}
     engines: {node: ^14.13.1 || >=16.0.0}
     dev: true
+
+  /prisma@4.12.0:
+    resolution: {integrity: sha512-xqVper4mbwl32BWzLpdznHAYvYDWQQWK2tBfXjdUD397XaveRyAP7SkBZ6kFlIg8kKayF4hvuaVtYwXd9BodAg==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+    requiresBuild: true
+    dependencies:
+      '@prisma/engines': 4.12.0
 
   /process-nextick-args@2.0.1:
     resolution: {integrity: sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==}
