@@ -5,7 +5,7 @@
     "build": "nuxt build",
     "dev": "nuxt dev",
     "http": "ngrok http 3000",
-    "db:migrate": "prisma migrate dev",
+    "db:type": "prisma generate",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
