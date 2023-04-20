@@ -5,7 +5,7 @@
     "build": "nuxt build",
     "dev": "nuxt dev",
     "http": "ngrok http 3000",
-    "db:migrate": "prisma migrate dev",
+    "db:type": "prisma generate",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
@@ -22,7 +22,6 @@
   },
   "dependencies": {
     "@line/liff": "^2.22.0",
-    "@prisma/client": "^4.13.0",
-    "@tailwindcss/line-clamp": "^0.4.4"
+    "@prisma/client": "^4.13.0"
   }
 }

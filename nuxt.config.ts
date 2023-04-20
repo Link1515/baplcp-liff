@@ -2,14 +2,14 @@
 export default defineNuxtConfig({
   runtimeConfig: {
     public: {
-      liffId: "",
+      liffId: '',
     },
   },
-  css: ["~/assets/css/main.css"],
+  css: ['~/assets/css/main.css'],
   postcss: {
     plugins: {
       tailwindcss: {},
       autoprefixer: {},
     },
   },
-});
+})
