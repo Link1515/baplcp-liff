@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
   runtimeConfig: {
     public: {
-      liffId: '',
+      liffId: process.env.NUXT_PUBLIC_LIFF_ID,
     },
   },
   css: ['~/assets/css/main.css'],
