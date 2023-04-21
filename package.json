@@ -22,7 +22,9 @@
   },
   "dependencies": {
     "@line/liff": "^2.22.0",
+    "@pinia/nuxt": "^0.4.9",
     "@prisma/client": "^4.13.0",
+    "pinia": "^2.0.35",
     "zod": "^3.21.4"
   }
 }
