@@ -2,9 +2,9 @@ import { PrismaClient } from '@prisma/client'
 import { z } from 'zod'
 
 const userCreateDataSchema = z.object({
-  name: z.string({
-    required_error: 'name is required.',
-    invalid_type_error: 'name must be a string.',
+  realName: z.string({
+    required_error: 'realName is required.',
+    invalid_type_error: 'realName must be a string.',
   }),
   lineId: z.string({
     required_error: 'lineId is required.',
@@ -15,7 +15,7 @@ const userCreateDataSchema = z.object({
 export default defineEventHandler(async (event) => {
   const prisma = new PrismaClient()
   try {
-    const body = await readBody(event)
+    const body = await readBody<{ realName: string; lineId: string }>(event)
 
     userCreateDataSchema.parse(body)
 

@@ -9,8 +9,9 @@ datasource db {
 
 model User {
   id String @id @default(auto()) @map("_id") @db.ObjectId
-  lineId String
-  name String
+  lineId String @unique
+  realName String
+  isAdmin Boolean? @default(false)
   joinRecordPerSeason JoinRecordPerSeason[]
   joinRecordPerTime JoinRecordPerTime[]
 
