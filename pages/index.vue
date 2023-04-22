@@ -1,3 +1,9 @@
+<script setup lang="ts">
+import { useUserStore } from '~/stores'
+
+const userStore = useUserStore()
+</script>
+
 <template>
   <div>
     <header>
@@ -14,6 +20,7 @@
           >活動清單</NuxtLink
         >
         <NuxtLink
+          v-if="userStore.isAdmin"
           to="/admin/events"
           class="grid place-items-center bg-slate-300 py-2"
           >活動管理</NuxtLink
