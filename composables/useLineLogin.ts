@@ -1,10 +1,11 @@
 import { useModal } from 'vue-final-modal'
-import { useUserStore } from '~/stores'
+import { useUserStore, useSiteStore } from '~/stores'
 import ModalCreateUser from '~/components/Modal/CreateUser.vue'
 
 export const useLineLogin = () => {
   const nuxtApp = useNuxtApp()
   const userStore = useUserStore()
+  const siteStore = useSiteStore()
 
   const modalCreateUser = useModal({
     component: ModalCreateUser,
@@ -15,6 +16,8 @@ export const useLineLogin = () => {
     },
   })
 
+  siteStore.loading = true
+
   onMounted(async () => {
     try {
       if (!nuxtApp.$liff.isLoggedIn()) {
@@ -22,11 +25,14 @@ export const useLineLogin = () => {
       }
       const lineUserProfile = nuxtApp.$liff.getDecodedIDToken()
       if (!lineUserProfile) throw new Error('Failed to get line profile')
+
       const lineId = lineUserProfile.sub || ''
       if (!lineId) throw new Error('Failed to get line id')
+
       userStore.lineId = lineId
       userStore.name = lineUserProfile.name || ''
       userStore.avatar = lineUserProfile.picture || ''
+
       // attempt to find user
       await $fetch(`/api/user/${lineId}`, {
         onResponseError: async (error) => {
@@ -37,5 +43,6 @@ export const useLineLogin = () => {
         },
       })
     } catch (error) {}
+    siteStore.loading = false
   })
 }
