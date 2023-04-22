@@ -13,16 +13,16 @@ model User {
   realName String
   isAdmin Boolean @default(false)
   joinRecordPerSeason JoinRecordPerSeason[]
-  joinRecordPerTime JoinRecordPerTime[]
+  joinRecordPerActivity JoinRecordPerActivity[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model Event {
+model Season {
   id String @id @default(auto()) @map("_id") @db.ObjectId
-  price_pre_time Int
-  price_pre_season Int
+  pricePreActivity Int
+  pricePreSeason Int
   activity Activity[]
   joinRecordPerSeason JoinRecordPerSeason[]
 
@@ -34,8 +34,8 @@ model JoinRecordPerSeason {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   user User @relation(fields: [userId], references: [id])
   userId String @db.ObjectId
-  event Event @relation(fields: [eventId], references: [id])
-  eventId String @db.ObjectId
+  season Season @relation(fields: [seasonId], references: [id])
+  seasonId String @db.ObjectId
   active Boolean
   hasPaid Boolean
 
@@ -45,16 +45,16 @@ model JoinRecordPerSeason {
 
 model Activity {
   id String @id @default(auto()) @map("_id") @db.ObjectId
-  event Event @relation(fields: [eventId], references: [id])
-  joinRecordPerTime JoinRecordPerTime[]
-  eventId String @db.ObjectId
-  hasInvited Boolean
+  season Season @relation(fields: [seasonId], references: [id])
+  seasonId String @db.ObjectId
+  joinRecordPerActivity JoinRecordPerActivity[]
+  hasInvited Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model JoinRecordPerTime {
+model JoinRecordPerActivity {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   user User @relation(fields: [userId], references: [id])
   userId String @db.ObjectId
