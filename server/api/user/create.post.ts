@@ -19,13 +19,13 @@ export default defineEventHandler(async (event) => {
 
     userCreateDataSchema.parse(body)
 
-    await prisma.user.create({
+    const user = await prisma.user.create({
       data: body,
     })
 
     await prisma.$disconnect()
 
-    return {}
+    return { ...user }
   } catch (error) {
     await prisma.$disconnect()
 

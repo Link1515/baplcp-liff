@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
 
     await prisma.$disconnect()
 
-    return {}
+    return { ...user }
   } catch (error) {
     if (error instanceof Error) {
       if (error.name === 'NOT_FOUND')

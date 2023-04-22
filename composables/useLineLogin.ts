@@ -1,4 +1,5 @@
 import { useModal } from 'vue-final-modal'
+import { User } from '@prisma/client'
 import { useUserStore, useSiteStore } from '~/stores'
 import ModalCreateUser from '~/components/Modal/CreateUser.vue'
 
@@ -34,7 +35,7 @@ export const useLineLogin = () => {
       userStore.avatar = lineUserProfile.picture || ''
 
       // attempt to find user
-      await $fetch(`/api/user/${lineId}`, {
+      const user = await $fetch<User>(`/api/user/${lineId}`, {
         onResponseError: async (error) => {
           if (error.response.status === 404) {
             // if user not found then create one
@@ -42,6 +43,10 @@ export const useLineLogin = () => {
           }
         },
       })
+
+      userStore.id = user.id
+      userStore.realName = user.realName
+      userStore.isAdmin = user.isAdmin
     } catch (error) {}
     siteStore.loading = false
   })

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { VueFinalModal } from 'vue-final-modal'
+import { User } from '@prisma/client'
 import { useUserStore } from '~/stores'
 
 const userStore = useUserStore()
@@ -16,13 +17,17 @@ const submit = async () => {
 
   loading.value = true
 
-  await $fetch(`/api/user/create`, {
+  const user = await $fetch<User>(`/api/user/create`, {
     method: 'post',
     body: {
       lineId: userStore.lineId,
       realName: userRealName.value,
     },
   })
+
+  userStore.id = user.id
+  userStore.realName = user.realName
+  userStore.isAdmin = user.isAdmin
 
   userRealName.value = ''
 
