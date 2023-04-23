@@ -1,7 +1,8 @@
 import { PrismaClient } from '@prisma/client'
 import { z } from 'zod'
+import { sessionConfig } from '~/server/sessionConfig'
 
-const userCreateDataSchema = z.object({
+const userCreateBodySchema = z.object({
   realName: z.string({
     required_error: 'realName is required.',
     invalid_type_error: 'realName must be a string.',
@@ -12,16 +13,21 @@ const userCreateDataSchema = z.object({
   }),
 })
 
+type userCreateBody = z.infer<typeof userCreateBodySchema>
+
 export default defineEventHandler(async (event) => {
   const prisma = new PrismaClient()
-  try {
-    const body = await readBody<{ realName: string; lineId: string }>(event)
 
-    userCreateDataSchema.parse(body)
+  try {
+    const body = await readBody<userCreateBody>(event)
+
+    userCreateBodySchema.parse(body)
 
     const user = await prisma.user.create({
       data: body,
     })
+
+    await updateSession(event, sessionConfig, { user })
 
     await prisma.$disconnect()
 

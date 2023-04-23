@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import { notFoundError } from '~/errors'
+import { sessionConfig } from '~/server/sessionConfig'
 
 export default defineEventHandler(async (event) => {
   const prisma = new PrismaClient()
@@ -16,6 +17,8 @@ export default defineEventHandler(async (event) => {
       throw notFoundError
     }
 
+    await updateSession(event, sessionConfig, { user })
+
     await prisma.$disconnect()
 
     return { ...user }
@@ -28,6 +31,7 @@ export default defineEventHandler(async (event) => {
         })
     }
 
+    console.log(error)
     throw createError({
       statusCode: 500,
       statusMessage: 'Server error',
