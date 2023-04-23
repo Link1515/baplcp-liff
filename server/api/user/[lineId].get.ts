@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client'
-import { notFoundError } from '~/errors'
+import { ErrorWithCode, notFoundError } from '~/server/errors'
 import { sessionConfig } from '~/server/sessionConfig'
 
 export default defineEventHandler(async (event) => {
@@ -23,15 +23,13 @@ export default defineEventHandler(async (event) => {
 
     return { ...user }
   } catch (error) {
-    if (error instanceof Error) {
-      if (error.name === 'NOT_FOUND')
-        throw createError({
-          statusCode: 404,
-          statusMessage: error.message,
-        })
+    if (error instanceof ErrorWithCode) {
+      throw createError({
+        statusCode: error.code,
+        statusMessage: error.message,
+      })
     }
 
-    console.log(error)
     throw createError({
       statusCode: 500,
       statusMessage: 'Server error',
