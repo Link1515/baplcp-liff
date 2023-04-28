@@ -25,6 +25,8 @@ model Season {
   pricePerActivity Int
   enableSeasonPayment Boolean @default(false)
   pricePerSeason Int?
+  startDate DateTime
+  endDate DateTime
   activityStartTime String 
   activityEndTime String
   activity Activity[]

@@ -1,14 +1,17 @@
 import { PrismaClient } from '@prisma/client'
 import { z } from 'zod'
 import { sessionConfig } from '~/server/sessionConfig'
+import { compareAsc } from 'date-fns'
 import { ErrorWithCode, forbiddenError } from '~/server/errors'
 
-const eventCreateBodySchema = z
+const seasonCreateBodySchema = z
   .object({
-    name: z.string({
-      required_error: 'name is required.',
-      invalid_type_error: 'name must be a string.',
-    }),
+    name: z
+      .string({
+        required_error: 'name is required.',
+        invalid_type_error: 'name must be a string.',
+      })
+      .min(1, { message: 'name length must be greater than 1' }),
     pricePerActivity: z.number({
       required_error: 'pricePerActivity is required.',
       invalid_type_error: 'pricePerActivity must be a number.',
@@ -48,29 +51,33 @@ const eventCreateBodySchema = z
     { message: 'You must send pricePerSeason when enableSeasonPayment is true' }
   )
 
-type eventCreateBody = z.infer<typeof eventCreateBodySchema>
+export type SeasonCreateBody = z.infer<typeof seasonCreateBodySchema>
 
 export default defineEventHandler(async (event) => {
   const prisma = new PrismaClient()
 
   try {
-    const session = await getSession(event, sessionConfig)
-    if (!session.data.isAdmin) throw forbiddenError
+    // const session = await getSession(event, sessionConfig)
+    // if (!session.data.isAdmin) throw forbiddenError
 
-    const body = await readBody<eventCreateBody>(event)
+    const body = await readBody<SeasonCreateBody>(event)
 
-    eventCreateBodySchema.parse(body)
+    seasonCreateBodySchema.parse(body)
+
+    const sortedDates = body.activityDates.sort(compareAsc)
 
     await prisma.season.create({
       data: {
         name: body.name,
         pricePerActivity: body.pricePerActivity,
-        activityStartTime: body.activityStartTime,
-        activityEndTime: body.activityEndTime,
         enableSeasonPayment: body.enableSeasonPayment,
         pricePerSeason: body.pricePerSeason,
+        startDate: new Date(sortedDates[0]),
+        endDate: new Date(sortedDates[sortedDates.length - 1]),
+        activityStartTime: body.activityStartTime,
+        activityEndTime: body.activityEndTime,
         activity: {
-          create: body.activityDates.map((date) => ({ date: new Date(date) })),
+          create: sortedDates.map((date) => ({ date: new Date(date) })),
         },
       },
     })

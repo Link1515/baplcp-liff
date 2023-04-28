@@ -1,23 +1,125 @@
 <script setup lang="ts">
 import VueDatePicker from '@vuepic/vue-datepicker'
-import type { DatePickerInstance } from '@vuepic/vue-datepicker'
 import { compareAsc, format } from 'date-fns'
+import { z } from 'zod'
+import { useSiteStore } from '~/stores'
 
-const timeStartPicker = ref<DatePickerInstance>(null)
-const timeEndPicker = ref<DatePickerInstance>(null)
+const siteStore = useSiteStore()
 
-const dates = ref<string[]>([])
+const seasonCreateFormSchema = z
+  .object({
+    name: z.string().min(1, { message: '請填入活動名稱' }),
+    pricePerActivity: z.number({ invalid_type_error: '請填入單次費用' }),
+    activityStartTime: z
+      .string({ required_error: '請填入開始時間' })
+      .regex(/^\d{2}:\d{2}$/, { message: '格式錯誤' }),
+    activityEndTime: z
+      .string({ required_error: '請填入結束時間' })
+      .regex(/^\d{2}:\d{2}$/, { message: '格式錯誤' }),
+    enableSeasonPayment: z.boolean().default(false),
+    pricePerSeason: z
+      .number({
+        invalid_type_error: '啟用季打收費後，需要再填入季打費用',
+      })
+      .optional(),
+    activityDates: z.number().array(),
+  })
+  .refine(
+    ({ enableSeasonPayment, pricePerSeason }) =>
+      enableSeasonPayment ? pricePerSeason !== undefined : true,
+    {
+      message: '啟用季打收費後，需要再填入季打費用',
+      path: ['pricePerSeason'],
+    }
+  )
+  .refine(({ activityDates }) => activityDates.length >= 1, {
+    message: '至少需要選擇一個日期',
+    path: ['activityDates'],
+  })
+  .refine(
+    ({ activityStartTime, activityEndTime }) => {
+      const startHour = parseInt(activityStartTime.split(':')[0])
+      const startMin = parseInt(activityStartTime.split(':')[1])
+      const endHour = parseInt(activityEndTime.split(':')[0])
+      const endMin = parseInt(activityEndTime.split(':')[1])
 
-const timeStart = ref<string | null>(null)
-const timeEnd = ref<string | null>(null)
+      return endHour > startHour || (endHour === startHour && endMin > startMin)
+    },
+    { message: '結束時間必須大於開始時間', path: ['activityTime'] }
+  )
 
-const pricePerActivity = ref<number | undefined>()
-const pricePerSeason = ref<number | undefined>()
-const enableSeasonPayment = ref(false)
+export type SeasonCreateForm = z.infer<typeof seasonCreateFormSchema>
+
+const form = ref<SeasonCreateForm>({
+  name: '',
+  pricePerActivity: 0,
+  activityStartTime: '00:00',
+  activityEndTime: '00:00',
+  enableSeasonPayment: false,
+  pricePerSeason: undefined,
+  activityDates: [],
+})
+
+const formErrors = ref<{ [key: string]: string[] }>({})
+
+const resetForm = () => {
+  form.value = {
+    name: '',
+    pricePerActivity: 0,
+    activityStartTime: '00:00',
+    activityEndTime: '00:00',
+    enableSeasonPayment: false,
+    pricePerSeason: undefined,
+    activityDates: [],
+  }
+
+  formErrors.value = {}
+}
+
+watch(
+  () => form.value.enableSeasonPayment,
+  () => {
+    if (!form.value.enableSeasonPayment) {
+      form.value.pricePerSeason = undefined
+    }
+  }
+)
+
+const submit = async () => {
+  try {
+    const validatedForm = seasonCreateFormSchema.parse(form.value)
+
+    siteStore.loading = true
+    await $fetch('/api/season/create', {
+      method: 'post',
+      body: validatedForm,
+    })
+
+    resetForm()
+
+    await navigateTo('/admin/season')
+    siteStore.loading = false
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      formErrors.value = {}
+
+      error.issues.forEach((issue) => {
+        const issueMessages = formErrors.value[issue.path[0]]
+        if (issueMessages) {
+          issueMessages.push(issue.message)
+        } else {
+          formErrors.value[issue.path[0]] = [issue.message]
+        }
+      })
+
+      scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }
+}
 </script>
 
 <template>
-  <header>
+  <div>
     <h1
       class="flex h-28 flex-col items-center justify-center bg-blue-950 text-center text-3xl text-white"
     >
@@ -26,17 +128,26 @@ const enableSeasonPayment = ref(false)
 
     <div class="container flex flex-col gap-4 py-8 pb-20">
       <div>
-        <h3 class="mb-1">活動名稱</h3>
+        <h3 class="text-lg">活動名稱</h3>
+        <small v-for="error in formErrors.name" class="text-red-600">{{
+          error
+        }}</small>
         <input
+          v-model="form.name"
           type="text"
           class="w-full rounded-md border border-gray-800 px-2 py-1 outline-none"
         />
       </div>
       <div>
-        <h3 class="mb-1">單次費用</h3>
+        <h3 class="mb-1 text-lg">單次費用</h3>
+        <small
+          v-for="error in formErrors.pricePerActivity"
+          class="text-red-600"
+          >{{ error }}</small
+        >
         <input
+          v-model.number="form.pricePerActivity"
           type="number"
-          v-model.number="pricePerActivity"
           class="w-full rounded-md border border-gray-800 px-2 py-1 outline-none"
         />
       </div>
@@ -44,30 +155,37 @@ const enableSeasonPayment = ref(false)
       <div>
         <label for="toggleSeasonPayment" class="mb-2">
           <input
-            v-model="enableSeasonPayment"
+            v-model="form.enableSeasonPayment"
             id="toggleSeasonPayment"
             type="checkbox"
           />
           啟用季打收費
         </label>
-        <template v-if="enableSeasonPayment">
+        <template v-if="form.enableSeasonPayment">
           <h3 class="mb-1">季打費用</h3>
+          <small
+            v-for="error in formErrors.pricePerSeason"
+            class="text-red-600"
+            >{{ error }}</small
+          >
           <input
+            v-model.number="form.pricePerSeason"
             type="number"
-            v-model.number="pricePerSeason"
             class="w-full rounded-md border border-gray-800 px-2 py-1 outline-none"
           />
         </template>
       </div>
 
       <div class="flex flex-col gap-2">
-        <h3>時間</h3>
+        <h3 class="text-lg">時間</h3>
+        <small v-for="error in formErrors.activityTime" class="text-red-600">{{
+          error
+        }}</small>
 
         <h4>開始時間</h4>
         <VueDatePicker
-          ref="timeStartPicker"
           time-picker
-          v-model="timeStart"
+          v-model="form.activityStartTime"
           model-type="HH:mm"
           :flow="['hours', 'minutes']"
           placeholder="請填入開始時間"
@@ -77,9 +195,8 @@ const enableSeasonPayment = ref(false)
 
         <h4>結束時間</h4>
         <VueDatePicker
-          ref="timeEndPicker"
           time-picker
-          v-model="timeEnd"
+          v-model="form.activityEndTime"
           model-type="HH:mm"
           :flow="['hours', 'minutes']"
           placeholder="請填入開始時間"
@@ -88,11 +205,14 @@ const enableSeasonPayment = ref(false)
         ></VueDatePicker>
       </div>
 
-      <div>
-        <h3 class="mb-2">日期</h3>
+      <div class="flex flex-col gap-2">
+        <h3 class="text-lg">日期</h3>
+        <small v-for="error in formErrors.activityDates" class="text-red-600">{{
+          error
+        }}</small>
 
         <VueDatePicker
-          v-model="dates"
+          v-model="form.activityDates"
           model-type="timestamp"
           inline
           multi-dates
@@ -118,14 +238,15 @@ const enableSeasonPayment = ref(false)
 
       <ul class="flex flex-col">
         <li
-          v-for="(date, index) in dates"
+          v-for="(date, index) in form.activityDates"
           class="py-1 text-center"
           :class="{ 'bg-neutral-200': index % 2 == 0 }"
         >
           {{ format(new Date(date), 'yyyy/MM/dd (ccc.)') }}
         </li>
       </ul>
-      <button @click="dates = []">reset</button>
+      <button @click="form.activityDates = []">重選日期</button>
+      <button @click="submit">完成</button>
     </div>
-  </header>
+  </div>
 </template>
