@@ -1,8 +1,8 @@
-import { PrismaClient } from '@prisma/client'
 import { z } from 'zod'
 import { sessionConfig } from '~/server/sessionConfig'
 import { compareAsc } from 'date-fns'
 import { ErrorWithCode, forbiddenError } from '~/server/errors'
+import { prisma } from '~/server/prisma'
 
 const seasonCreateBodySchema = z
   .object({
@@ -54,9 +54,8 @@ const seasonCreateBodySchema = z
 export type SeasonCreateBody = z.infer<typeof seasonCreateBodySchema>
 
 export default defineEventHandler(async (event) => {
-  const prisma = new PrismaClient()
-
   try {
+    // TODO 記得解註解
     // const session = await getSession(event, sessionConfig)
     // if (!session.data.isAdmin) throw forbiddenError
 

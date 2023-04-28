@@ -1,6 +1,6 @@
-import { PrismaClient } from '@prisma/client'
 import { z } from 'zod'
 import { sessionConfig } from '~/server/sessionConfig'
+import { prisma } from '~/server/prisma'
 
 const userCreateBodySchema = z.object({
   realName: z.string({
@@ -16,8 +16,6 @@ const userCreateBodySchema = z.object({
 type userCreateBody = z.infer<typeof userCreateBodySchema>
 
 export default defineEventHandler(async (event) => {
-  const prisma = new PrismaClient()
-
   try {
     const body = await readBody<userCreateBody>(event)
 

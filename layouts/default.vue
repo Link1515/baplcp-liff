@@ -19,12 +19,14 @@ watch(
 <template>
   <div>
     <div
-      v-if="siteStore.loading"
+      v-show="siteStore.loading"
       class="grid h-screen w-screen place-items-center"
     >
       <img src="/images/loading.svg" alt="loading" />
     </div>
-    <slot v-else />
+    <div v-show="!siteStore.loading">
+      <slot />
+    </div>
 
     <ModalsContainer />
   </div>

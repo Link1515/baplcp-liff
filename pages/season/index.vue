@@ -1,3 +1,19 @@
+<script setup lang="ts">
+import { format } from 'date-fns'
+import { Season } from '@prisma/client'
+import { useSiteStore } from '~/stores'
+
+const siteStore = useSiteStore()
+
+const seasonList = ref<Season[]>([])
+
+onBeforeMount(async () => {
+  siteStore.loading = true
+  seasonList.value = await $fetch('/api/season')
+  siteStore.loading = false
+})
+</script>
+
 <template>
   <div>
     <header>
@@ -11,18 +27,16 @@
     <div class="container">
       <div class="flex flex-col gap-4 py-8 text-center">
         <NuxtLink
-          to="/season/1233"
+          v-for="season in seasonList"
+          :to="`/season/${season.id}`"
           class="grid place-items-center bg-slate-300 py-2"
         >
-          <h2>華江高中</h2>
-          <small>112/01/01 ~ 112/03/31</small>
-        </NuxtLink>
-        <NuxtLink
-          to="/season/2332"
-          class="grid place-items-center bg-slate-300 py-2"
-        >
-          <h2>育成高中</h2>
-          <small>112/01/01 ~ 112/03/31</small>
+          <h2>{{ season.name }}</h2>
+          <small
+            >{{ format(new Date(season.startDate), 'yyyy/MM/dd (ccc.)') }}
+            ~
+            {{ format(new Date(season.endDate), 'yyyy/MM/dd (ccc.)') }}</small
+          >
         </NuxtLink>
       </div>
     </div>

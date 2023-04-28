@@ -98,7 +98,6 @@ const submit = async () => {
     resetForm()
 
     await navigateTo('/admin/season')
-    siteStore.loading = false
   } catch (error) {
     if (error instanceof z.ZodError) {
       formErrors.value = {}

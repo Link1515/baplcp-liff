@@ -1,9 +1,8 @@
-import { PrismaClient } from '@prisma/client'
 import { ErrorWithCode, notFoundError } from '~/server/errors'
 import { sessionConfig } from '~/server/sessionConfig'
+import { prisma } from '~/server/prisma'
 
 export default defineEventHandler(async (event) => {
-  const prisma = new PrismaClient()
   const lineId = event.context.params?.lineId as string
 
   try {
