@@ -12,19 +12,19 @@
     <div class="container py-8">
       <div class="flex flex-col gap-4 text-center">
         <NuxtLink
-          to="/events/1233/1321"
+          to="/season/1233/1321"
           class="grid place-items-center bg-slate-300 py-2"
         >
           <h2>112/01/07 (日)</h2>
         </NuxtLink>
         <NuxtLink
-          to="/events/1233/1231"
+          to="/season/1233/1231"
           class="grid place-items-center bg-slate-300 py-2"
         >
           <h2>112/01/10 (日)</h2>
         </NuxtLink>
         <NuxtLink
-          to="/events/1233/seasonMember"
+          to="/season/1233/seasonMember"
           class="grid place-items-center bg-slate-300 py-2"
         >
           <h2>季打</h2>

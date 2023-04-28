@@ -11,19 +11,25 @@
     <div class="container">
       <div class="flex flex-col gap-4 py-8 text-center">
         <NuxtLink
-          to="/events/1233"
+          to="/admin/events/1233"
           class="grid place-items-center bg-slate-300 py-2"
         >
           <h2>華江高中</h2>
           <small>112/01/01 ~ 112/03/31</small>
         </NuxtLink>
         <NuxtLink
-          to="/events/2332"
+          to="/admin/events/2332"
           class="grid place-items-center bg-slate-300 py-2"
         >
           <h2>育成高中</h2>
           <small>112/01/01 ~ 112/03/31</small>
         </NuxtLink>
+
+        <NuxtLink
+          to="/admin/season/create"
+          class="grid place-items-center bg-slate-300 py-2"
+          >+</NuxtLink
+        >
       </div>
     </div>
   </div>

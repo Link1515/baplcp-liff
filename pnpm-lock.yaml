@@ -10,6 +10,12 @@ dependencies:
   '@prisma/client':
     specifier: ^4.13.0
     version: 4.13.0(prisma@4.13.0)
+  '@vuepic/vue-datepicker':
+    specifier: ^4.5.0
+    version: 4.5.0(vue@3.2.47)
+  date-fns:
+    specifier: ^2.29.3
+    version: 2.29.3
   pinia:
     specifier: ^2.0.35
     version: 2.0.35(vue@3.2.47)
@@ -1834,6 +1840,17 @@ packages:
   /@vue/shared@3.2.47:
     resolution: {integrity: sha512-BHGyyGN3Q97EZx0taMQ+OLNuZcW3d37ZEVmEAyeoA9ERdGvm9Irc/0Fua8SNyOtV1w6BS4q25wbMzJujO9HIfQ==}
 
+  /@vuepic/vue-datepicker@4.5.0(vue@3.2.47):
+    resolution: {integrity: sha512-SCh1j8D6xbfe1lCkCYB5vzr0GVePA537xZZrScwhIdICEtu+0tGcNgMv0EeFFqQzGyHB5rcZMs4EebI6dOmxxQ==}
+    engines: {node: '>=14'}
+    peerDependencies:
+      vue: '>=3.2.0'
+    dependencies:
+      date-fns: 2.29.3
+      date-fns-tz: 1.3.8(date-fns@2.29.3)
+      vue: 3.2.47
+    dev: false
+
   /@vueuse/core@10.0.2(vue@3.2.47):
     resolution: {integrity: sha512-/UGc2cXbxbeIFLDSJyHUjI9QZ4CJJkhiJe9TbKNPSofcWmYhhUgJ+7iw9njXTKu/Xc3Z6UeXVR9fosW1+cyrnQ==}
     dependencies:
@@ -2601,6 +2618,19 @@ packages:
     resolution: {integrity: sha512-0R9ikRb668HB7QDxT1vkpuUBtqc53YyAwMwGeUFKRojY/NWKvdZ+9UYtRfGmhqNbRkTSVpMbmyhXipFFv2cb/A==}
     engines: {node: '>= 12'}
     dev: true
+
+  /date-fns-tz@1.3.8(date-fns@2.29.3):
+    resolution: {integrity: sha512-qwNXUFtMHTTU6CFSFjoJ80W8Fzzp24LntbjFFBgL/faqds4e5mo9mftoRLgr3Vi1trISsg4awSpYVsOQCRnapQ==}
+    peerDependencies:
+      date-fns: '>=2.0.0'
+    dependencies:
+      date-fns: 2.29.3
+    dev: false
+
+  /date-fns@2.29.3:
+    resolution: {integrity: sha512-dDCnyH2WnnKusqvZZ6+jA1O51Ibt8ZMRNkDZdyAyK4YfbDwa/cEmuztzG5pk6hqlp9aSBPYcjOlktquahGwGeA==}
+    engines: {node: '>=0.11'}
+    dev: false
 
   /debug@2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}

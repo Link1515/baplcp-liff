@@ -20,7 +20,14 @@ export default defineNuxtConfig({
   pinia: {
     autoImports: ['defineStore', ['defineStore', 'definePiniaStore']],
   },
-  css: ['~/assets/css/main.css', 'vue-final-modal/style.css'],
+  build: {
+    transpile: ['@vuepic/vue-datepicker'],
+  },
+  css: [
+    '~/assets/css/main.css',
+    'vue-final-modal/style.css',
+    '@vuepic/vue-datepicker/dist/main.css',
+  ],
   postcss: {
     plugins: {
       tailwindcss: {},

@@ -13,6 +13,7 @@ const userRealName = ref('')
 const loading = ref(false)
 
 const submit = async () => {
+  // TODO realName validation error message
   if (!userRealName.value) return
 
   loading.value = true
