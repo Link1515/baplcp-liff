@@ -21,8 +21,12 @@ model User {
 
 model Season {
   id String @id @default(auto()) @map("_id") @db.ObjectId
-  pricePreActivity Int
-  pricePreSeason Int
+  name String
+  pricePerActivity Int
+  enableSeasonPayment Boolean @default(false)
+  pricePerSeason Int?
+  activityStartTime String 
+  activityEndTime String
   activity Activity[]
   joinRecordPerSeason JoinRecordPerSeason[]
 
@@ -47,6 +51,7 @@ model Activity {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   season Season @relation(fields: [seasonId], references: [id])
   seasonId String @db.ObjectId
+  date DateTime 
   joinRecordPerActivity JoinRecordPerActivity[]
   hasInvited Boolean @default(false)
 
