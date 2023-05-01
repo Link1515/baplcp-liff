@@ -9,8 +9,7 @@ export default defineEventHandler(async (event) => {
       where: { id },
       include: { activity: true },
     })
-
-    if (season === null) throw notFoundError
+    if (season === null) throw notFoundError('Season not found')
 
     await prisma.$disconnect()
 

@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
     })
 
     if (!user) {
-      throw notFoundError
+      throw notFoundError('User not found')
     }
 
     await updateSession(event, sessionConfig, { user })

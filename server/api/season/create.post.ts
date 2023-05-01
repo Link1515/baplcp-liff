@@ -51,7 +51,7 @@ const seasonCreateBodySchema = z
     { message: 'You must send pricePerSeason when enableSeasonPayment is true' }
   )
 
-export type SeasonCreateBody = z.infer<typeof seasonCreateBodySchema>
+type SeasonCreateBody = z.infer<typeof seasonCreateBodySchema>
 
 export default defineEventHandler(async (event) => {
   try {

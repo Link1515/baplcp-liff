@@ -1,3 +1,4 @@
 import { ErrorWithCode } from './class/ErrorWithCode'
 
-export const notFoundError = new ErrorWithCode('NOT_FOUND', 'Not Found', 401)
+export const notFoundError = (message: string) =>
+  new ErrorWithCode('NOT_FOUND', message, 404)
