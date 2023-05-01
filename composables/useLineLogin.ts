@@ -45,7 +45,6 @@ export const useLineLogin = () => {
       })
 
       userStore.id = user.id
-      userStore.realName = user.realName
       userStore.isAdmin = user.isAdmin
     } catch (error) {}
     siteStore.loading = false

@@ -16,6 +16,12 @@ const seasonCreateBodySchema = z
       required_error: 'pricePerActivity is required.',
       invalid_type_error: 'pricePerActivity must be a number.',
     }),
+    activityJoinLimit: z
+      .number({
+        required_error: 'activityJoinLimit is required.',
+        invalid_type_error: 'activityJoinLimit must be a string.',
+      })
+      .gt(1, { message: 'activityJoinLimit must greater than 1' }),
     activityStartTime: z
       .string({
         required_error: 'activityStartTime is required.',
@@ -73,6 +79,7 @@ export default defineEventHandler(async (event) => {
         pricePerSeason: body.pricePerSeason,
         startDate: new Date(sortedDates[0]),
         endDate: new Date(sortedDates[sortedDates.length - 1]),
+        activityJoinLimit: body.activityJoinLimit,
         activityStartTime: body.activityStartTime,
         activityEndTime: body.activityEndTime,
         activity: {

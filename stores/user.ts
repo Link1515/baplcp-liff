@@ -3,7 +3,6 @@ export const useUserStore = defineStore('user', () => {
   const lineId = ref('')
   const isAdmin = ref(false)
   const name = ref('')
-  const realName = ref('')
   const avatar = ref('')
 
   return {
@@ -11,7 +10,6 @@ export const useUserStore = defineStore('user', () => {
     lineId,
     isAdmin,
     name,
-    realName,
     avatar,
   }
 })

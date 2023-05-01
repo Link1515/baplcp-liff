@@ -1,33 +1,63 @@
+<script setup lang="ts">
+import { format } from 'date-fns'
+import { User, Activity, Season, JoinRecordPerActivity } from '@prisma/client'
+import { useUserStore, useSiteStore } from '~/stores'
+
+const siteStore = useSiteStore()
+const userStore = useUserStore()
+const route = useRoute()
+const activityId = route.params.activityId as string
+
+const activity = ref<Activity & { season: Season }>()
+const joinRecord = ref<(JoinRecordPerActivity & { user: User })[]>()
+
+siteStore.loading = true
+onBeforeMount(async () => {
+  activity.value = await $fetch(`/api/activity/${activityId}`)
+  joinRecord.value = await $fetch(`/api/joinRecordPerActivity/${activityId}`)
+
+  siteStore.loading = false
+})
+
+const join = async () => {
+  await $fetch('/api/joinRecordPerActivity', {
+    method: 'post',
+    body: {
+      userId: userStore.id,
+      activityId,
+    },
+  })
+}
+</script>
+
 <template>
-  <div>
+  <div v-if="activity && joinRecord">
     <header>
       <h1
         class="flex h-28 flex-col items-center justify-center bg-blue-950 text-center text-white"
       >
-        <span class="text-3xl">華江高中</span>
-        <small class="text-xl">112/01/07 (日)</small>
+        <span class="text-3xl">{{ activity.season.name }}</span>
+        <small class="text-xl">{{
+          format(new Date(activity.date), 'yyyy/MM/dd (ccc.)')
+        }}</small>
       </h1>
     </header>
 
     <div class="container py-8 pb-20">
-      <h3 class="text-center text-xl">報名人數： 4/18</h3>
-      <h3 class="mb-4 text-center text-xl">費用： 90 NTD</h3>
+      <h3 class="text-center text-xl">
+        報名人數： {{ joinRecord.length }}/{{
+          activity.season.activityJoinLimit
+        }}
+      </h3>
+      <h3 class="mb-4 text-center text-xl">
+        費用： {{ activity.season.pricePerActivity }} NTD
+      </h3>
 
       <ul>
-        <li class="flex">
-          <span class="mr-2">1.</span>
-          <span class="mr-auto">佳穎</span>
+        <li v-for="(record, index) in joinRecord" class="flex">
+          <span class="mr-2">{{ index + 1 }}.</span>
+          <span class="mr-auto">{{ record.user.name }}</span>
           <span>報名成功</span>
-        </li>
-        <li class="flex">
-          <span class="mr-2">2.</span>
-          <span class="mr-auto">勇成</span>
-          <span>報名成功</span>
-        </li>
-        <li class="flex">
-          <span class="mr-2">3.</span>
-          <span class="mr-auto">乃瑄</span>
-          <span>繳費成功</span>
         </li>
       </ul>
     </div>
@@ -35,7 +65,9 @@
     <div
       class="fixed bottom-0 flex h-16 w-full items-center justify-center bg-slate-300 px-4"
     >
-      <button class="rounded-full bg-green-500 px-4 py-1">立即報名</button>
+      <button @click="join" class="rounded-full bg-green-500 px-4 py-1">
+        立即報名
+      </button>
     </div>
   </div>
 </template>

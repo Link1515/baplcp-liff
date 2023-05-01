@@ -11,6 +11,8 @@ model User {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   lineId String @unique
   realName String
+  name String
+  avatar String
   isAdmin Boolean @default(false)
   joinRecordPerSeason JoinRecordPerSeason[]
   joinRecordPerActivity JoinRecordPerActivity[]
@@ -29,6 +31,7 @@ model Season {
   endDate DateTime
   activityStartTime String 
   activityEndTime String
+  activityJoinLimit Int
   activity Activity[]
   joinRecordPerSeason JoinRecordPerSeason[]
 

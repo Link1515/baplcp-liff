@@ -9,6 +9,9 @@ const siteStore = useSiteStore()
 const seasonCreateFormSchema = z
   .object({
     name: z.string().min(1, { message: '請填入活動名稱' }),
+    activityJoinLimit: z
+      .number({ invalid_type_error: '請填入單次人數限制' })
+      .gt(1, { message: '請填入單次人數限制' }),
     pricePerActivity: z.number({ invalid_type_error: '請填入單次費用' }),
     activityStartTime: z
       .string({ required_error: '請填入開始時間' })
@@ -52,6 +55,7 @@ export type SeasonCreateForm = z.infer<typeof seasonCreateFormSchema>
 
 const form = ref<SeasonCreateForm>({
   name: '',
+  activityJoinLimit: 0,
   pricePerActivity: 0,
   activityStartTime: '00:00',
   activityEndTime: '00:00',
@@ -65,6 +69,7 @@ const formErrors = ref<{ [key: string]: string[] }>({})
 const resetForm = () => {
   form.value = {
     name: '',
+    activityJoinLimit: 0,
     pricePerActivity: 0,
     activityStartTime: '00:00',
     activityEndTime: '00:00',
@@ -134,6 +139,19 @@ const submit = async () => {
         <input
           v-model="form.name"
           type="text"
+          class="w-full rounded-md border border-gray-800 px-2 py-1 outline-none"
+        />
+      </div>
+      <div>
+        <h3 class="mb-1 text-lg">單次人數上限</h3>
+        <small
+          v-for="error in formErrors.activityJoinLimit"
+          class="text-red-600"
+          >{{ error }}</small
+        >
+        <input
+          v-model.number="form.activityJoinLimit"
+          type="number"
           class="w-full rounded-md border border-gray-800 px-2 py-1 outline-none"
         />
       </div>

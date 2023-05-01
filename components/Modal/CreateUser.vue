@@ -23,11 +23,12 @@ const submit = async () => {
     body: {
       lineId: userStore.lineId,
       realName: userRealName.value,
+      name: userStore.name,
+      avatar: userStore.avatar,
     },
   })
 
   userStore.id = user.id
-  userStore.realName = user.realName
   userStore.isAdmin = user.isAdmin
 
   userRealName.value = ''

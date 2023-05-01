@@ -11,6 +11,14 @@ const userCreateBodySchema = z.object({
     required_error: 'lineId is required.',
     invalid_type_error: 'lineId must be a string.',
   }),
+  name: z.string({
+    required_error: 'name is required.',
+    invalid_type_error: 'name must be a string.',
+  }),
+  avatar: z.string({
+    required_error: 'avatar is required.',
+    invalid_type_error: 'avatar must be a string.',
+  }),
 })
 
 type userCreateBody = z.infer<typeof userCreateBodySchema>
