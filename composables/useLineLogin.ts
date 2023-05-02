@@ -31,8 +31,12 @@ export const useLineLogin = () => {
       if (!lineId) throw new Error('Failed to get line id')
 
       userStore.lineId = lineId
-      userStore.name = lineUserProfile.name || ''
-      userStore.avatar = lineUserProfile.picture || ''
+
+      const name = lineUserProfile.name as string
+      const avatar = lineUserProfile.picture as string
+
+      userStore.name = name
+      userStore.avatar = avatar
 
       // attempt to find user
       const user = await $fetch<User>(`/api/user/${lineId}`, {
@@ -46,6 +50,17 @@ export const useLineLogin = () => {
 
       userStore.id = user.id
       userStore.isAdmin = user.isAdmin
+
+      // sync user line data to db
+      if (user.name !== name || user.avatar !== avatar) {
+        await $fetch('/api/user/update', {
+          method: 'post',
+          body: {
+            name,
+            avatar,
+          },
+        })
+      }
     } catch (error) {}
     siteStore.loading = false
   })

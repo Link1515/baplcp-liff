@@ -7,9 +7,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     const user = await prisma.user.findUnique({
-      where: {
-        lineId,
-      },
+      where: { lineId },
     })
 
     if (!user) {
