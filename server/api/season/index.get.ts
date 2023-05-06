@@ -7,6 +7,7 @@ export default defineEventHandler(async (event) => {
 
     return seasonList
   } catch (error) {
+    console.log(error)
     throw createError({
       statusCode: 500,
       statusMessage: 'Server error',

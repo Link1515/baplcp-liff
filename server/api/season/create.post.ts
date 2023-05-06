@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { sessionConfig } from '~/server/sessionConfig'
-import { compareAsc } from 'date-fns'
+import { subDays, compareAsc } from 'date-fns'
 import { ErrorWithCode, forbiddenError } from '~/server/errors'
 import { prisma } from '~/server/prisma'
 
@@ -71,7 +71,7 @@ export default defineEventHandler(async (event) => {
 
     const sortedDates = body.activityDates.sort(compareAsc)
 
-    await prisma.season.create({
+    const season = await prisma.season.create({
       data: {
         name: body.name,
         pricePerActivity: body.pricePerActivity,
@@ -79,12 +79,19 @@ export default defineEventHandler(async (event) => {
         pricePerSeason: body.pricePerSeason,
         startDate: new Date(sortedDates[0]),
         endDate: new Date(sortedDates[sortedDates.length - 1]),
+        allowedJoinDate: subDays(new Date(sortedDates[0]), 6),
         activityJoinLimit: body.activityJoinLimit,
         activityStartTime: body.activityStartTime,
         activityEndTime: body.activityEndTime,
         activity: {
-          create: sortedDates.map((date) => ({ date: new Date(date) })),
+          create: sortedDates.map((date) => ({
+            date: new Date(date),
+            allowedJoinDate: subDays(new Date(date), 5),
+          })),
         },
+      },
+      include: {
+        activity: true,
       },
     })
 

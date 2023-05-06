@@ -15,21 +15,27 @@ const userCurrentRecord = ref<JoinRecordPerActivity>()
 siteStore.loading = true
 
 const getUserCurrentRecord = async () => {
-  userCurrentRecord.value = await $fetch(
+  userCurrentRecord.value = await $fetch<JoinRecordPerActivity>(
     `/api/joinRecordPerActivity/getUserRecord/${userStore.id}/${activityId}`
   )
 }
 
 let timer: NodeJS.Timer
 onMounted(async () => {
-  activity.value = await $fetch(`/api/activity/${activityId}`)
+  activity.value = await $fetch<Activity & { season: Season }>(
+    `/api/activity/${activityId}`
+  )
 
-  joinRecord.value = await $fetch(`/api/joinRecordPerActivity/${activityId}`)
+  joinRecord.value = await $fetch<(JoinRecordPerActivity & { user: User })[]>(
+    `/api/joinRecordPerActivity/${activityId}`
+  )
 
   await getUserCurrentRecord()
 
   timer = setInterval(async () => {
-    joinRecord.value = await $fetch(`/api/joinRecordPerActivity/${activityId}`)
+    joinRecord.value = await $fetch<(JoinRecordPerActivity & { user: User })[]>(
+      `/api/joinRecordPerActivity/${activityId}`
+    )
   }, 5000)
 
   siteStore.loading = false

@@ -34,6 +34,8 @@ model Season {
   activityJoinLimit Int
   activity Activity[]
   joinRecordPerSeason JoinRecordPerSeason[]
+  allowedJoin Boolean @default(false)
+  allowedJoinDate DateTime
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -58,7 +60,8 @@ model Activity {
   seasonId String @db.ObjectId
   date DateTime 
   joinRecordPerActivity JoinRecordPerActivity[]
-  hasInvited Boolean @default(false)
+  allowedJoin Boolean @default(false)
+  allowedJoinDate DateTime
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
