@@ -47,6 +47,7 @@ export default defineEventHandler(async (event) => {
       where: {
         userId: body.userId,
         activityId: body.activityId,
+        active: true,
       },
     })
     if (record) throw badRequestError('User already join the activity')

@@ -10,23 +10,64 @@ const activityId = route.params.activityId as string
 
 const activity = ref<Activity & { season: Season }>()
 const joinRecord = ref<(JoinRecordPerActivity & { user: User })[]>()
+const userCurrentRecord = ref<JoinRecordPerActivity>()
 
 siteStore.loading = true
-onBeforeMount(async () => {
+
+const getUserCurrentRecord = async () => {
+  userCurrentRecord.value = await $fetch(
+    `/api/joinRecordPerActivity/getUserRecord/${userStore.id}/${activityId}`
+  )
+}
+
+let timer: NodeJS.Timer
+onMounted(async () => {
   activity.value = await $fetch(`/api/activity/${activityId}`)
-  joinRecord.value = await $fetch(`/api/joinRecordPerActivity/${activityId}`)
+  getUserCurrentRecord()
+
+  timer = setInterval(async () => {
+    joinRecord.value = await $fetch(`/api/joinRecordPerActivity/${activityId}`)
+  }, 5000)
 
   siteStore.loading = false
 })
 
+onUnmounted(() => {
+  clearInterval(timer)
+})
+
 const join = async () => {
-  await $fetch('/api/joinRecordPerActivity', {
-    method: 'post',
-    body: {
-      userId: userStore.id,
-      activityId,
-    },
-  })
+  try {
+    siteStore.loading = true
+    await $fetch('/api/joinRecordPerActivity', {
+      method: 'post',
+      body: {
+        userId: userStore.id,
+        activityId,
+      },
+    })
+
+    await getUserCurrentRecord()
+
+    siteStore.loading = false
+  } catch (error) {}
+}
+
+const removeFromRecord = async () => {
+  if (!userCurrentRecord.value) return
+
+  try {
+    siteStore.loading = true
+
+    await $fetch(
+      `/api/joinRecordPerActivity/delete/${userCurrentRecord.value.id}`,
+      { method: 'post' }
+    )
+
+    userCurrentRecord.value = undefined
+
+    siteStore.loading = false
+  } catch (error) {}
 }
 </script>
 
@@ -65,9 +106,19 @@ const join = async () => {
     <div
       class="fixed bottom-0 flex h-16 w-full items-center justify-center bg-slate-300 px-4"
     >
-      <button @click="join" class="rounded-full bg-green-500 px-4 py-1">
-        立即報名
-      </button>
+      <template v-if="userCurrentRecord">
+        <button
+          @click="removeFromRecord"
+          class="rounded-full bg-red-400 px-4 py-1"
+        >
+          取消報名
+        </button>
+      </template>
+      <template v-else>
+        <button @click="join" class="rounded-full bg-green-500 px-4 py-1">
+          立即報名
+        </button>
+      </template>
     </div>
   </div>
 </template>

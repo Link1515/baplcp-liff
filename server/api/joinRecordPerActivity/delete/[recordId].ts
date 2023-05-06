@@ -2,16 +2,16 @@ import { prisma } from '~/server/prisma'
 
 export default defineEventHandler(async (event) => {
   try {
-    const activityId = event.context.params?.activityId as string
+    const recordId = event.context.params?.recordId as string
 
-    const records = prisma.joinRecordPerActivity.findMany({
-      where: { activityId, active: true },
-      include: { user: true },
+    await prisma.joinRecordPerActivity.update({
+      where: { id: recordId },
+      data: { active: false },
     })
 
     await prisma.$disconnect()
 
-    return records
+    return {}
   } catch (error) {
     await prisma.$disconnect()
 

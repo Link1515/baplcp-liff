@@ -72,6 +72,7 @@ model JoinRecordPerActivity {
   activityId String @db.ObjectId
   active Boolean @default(true)
   hasPaid Boolean @default(false)
+  addBySeason Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
