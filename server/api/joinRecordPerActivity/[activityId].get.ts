@@ -6,6 +6,7 @@ export default defineEventHandler(async (event) => {
 
     const records = prisma.joinRecordPerActivity.findMany({
       where: { activityId, active: true },
+      orderBy: { updatedAt: 'asc' },
       include: { user: true },
     })
 

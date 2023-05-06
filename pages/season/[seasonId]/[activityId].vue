@@ -23,7 +23,10 @@ const getUserCurrentRecord = async () => {
 let timer: NodeJS.Timer
 onMounted(async () => {
   activity.value = await $fetch(`/api/activity/${activityId}`)
-  getUserCurrentRecord()
+
+  joinRecord.value = await $fetch(`/api/joinRecordPerActivity/${activityId}`)
+
+  await getUserCurrentRecord()
 
   timer = setInterval(async () => {
     joinRecord.value = await $fetch(`/api/joinRecordPerActivity/${activityId}`)

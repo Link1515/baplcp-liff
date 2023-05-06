@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { prisma } from '~/server/prisma'
-import { ErrorWithCode, notFoundError, badRequestError } from '~/server/errors'
+import { ErrorWithCode, notFoundError } from '~/server/errors'
 
 const joinRecordPerActivityCreateBodySchema = z.object({
   userId: z
@@ -47,14 +47,16 @@ export default defineEventHandler(async (event) => {
       where: {
         userId: body.userId,
         activityId: body.activityId,
-        active: true,
+        active: false,
       },
     })
-    if (record) throw badRequestError('User already join the activity')
 
-    await prisma.joinRecordPerActivity.create({
-      data: body,
-    })
+    record
+      ? await prisma.joinRecordPerActivity.update({
+          where: { id: record.id },
+          data: { active: true },
+        })
+      : await prisma.joinRecordPerActivity.create({ data: body })
 
     await prisma.$disconnect()
 
