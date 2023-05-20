@@ -80,3 +80,12 @@ model JoinRecordPerActivity {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Schedule {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  message String
+  triggerDateTime DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

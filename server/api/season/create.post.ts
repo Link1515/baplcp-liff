@@ -95,6 +95,14 @@ export default defineEventHandler(async (event) => {
       },
     })
 
+    // add schedule
+    prisma.schedule.createMany({
+      data: season.activity.map((activity) => ({
+        triggerDateTime: new Date(activity.allowedJoinDate),
+        message: `${season.name} 開放報名！`,
+      })),
+    })
+
     await prisma.$disconnect()
 
     return {}
