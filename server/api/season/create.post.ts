@@ -1,5 +1,4 @@
 import { z } from 'zod'
-import { sessionConfig } from '~/server/sessionConfig'
 import { subDays, compareAsc } from 'date-fns'
 import { ErrorWithCode, forbiddenError } from '~/server/errors'
 import { prisma } from '~/server/prisma'
@@ -61,9 +60,7 @@ type SeasonCreateBody = z.infer<typeof seasonCreateBodySchema>
 
 export default defineEventHandler(async (event) => {
   try {
-    // TODO 記得解註解
-    const session = await getSession(event, sessionConfig)
-    if (!session.data.isAdmin) throw forbiddenError
+    // TODO serverless 架構中 session 會失效，可能要另外檢查用戶使否為管理員
 
     const body = await readBody<SeasonCreateBody>(event)
 

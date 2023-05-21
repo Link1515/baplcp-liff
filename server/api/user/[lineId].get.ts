@@ -1,5 +1,4 @@
 import { ErrorWithCode, notFoundError } from '~/server/errors'
-import { sessionConfig } from '~/server/sessionConfig'
 import { prisma } from '~/server/prisma'
 
 export default defineEventHandler(async (event) => {
@@ -13,8 +12,6 @@ export default defineEventHandler(async (event) => {
     if (!user) {
       throw notFoundError('User not found')
     }
-
-    await updateSession(event, sessionConfig, { user })
 
     await prisma.$disconnect()
 

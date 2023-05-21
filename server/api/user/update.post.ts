@@ -1,14 +1,12 @@
 import { z } from 'zod'
-import {
-  ErrorWithCode,
-  badRequestError,
-  unauthorizedError,
-} from '~/server/errors'
-import { sessionConfig } from '~/server/sessionConfig'
-import { User } from '@prisma/client'
+import { ErrorWithCode, badRequestError } from '~/server/errors'
 import { prisma } from '~/server/prisma'
 
 const userUpdateBodySchema = z.object({
+  userId: z.string({
+    invalid_type_error: 'userId must be a string.',
+    required_error: 'userId is required.',
+  }),
   name: z.string({ invalid_type_error: 'name must be a string.' }).optional(),
   avatar: z
     .string({ invalid_type_error: 'avatar must be a string.' })
@@ -20,11 +18,6 @@ type userUpdateBody = z.infer<typeof userUpdateBodySchema>
 // TODO we cannot use http patch method on ngrok. Maybe try patch on production env (cyclic).
 export default defineEventHandler(async (event) => {
   try {
-    const session = await getSession<{ user: User }>(event, sessionConfig)
-    const { user } = session.data
-
-    if (!user) throw unauthorizedError('User unauthorized')
-
     const body = await readBody<userUpdateBody>(event)
 
     userUpdateBodySchema.parse(body)
@@ -35,7 +28,7 @@ export default defineEventHandler(async (event) => {
       )
 
     await prisma.user.update({
-      where: { id: user.id },
+      where: { id: body.userId },
       data: {
         name: body.name,
         avatar: body.avatar,

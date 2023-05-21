@@ -56,6 +56,7 @@ export const useLineLogin = () => {
         await $fetch('/api/user/update', {
           method: 'post',
           body: {
+            userId: user.id,
             name,
             avatar,
           },

@@ -1,5 +1,4 @@
 import { z } from 'zod'
-import { sessionConfig } from '~/server/sessionConfig'
 import { prisma } from '~/server/prisma'
 
 const userCreateBodySchema = z.object({
@@ -32,8 +31,6 @@ export default defineEventHandler(async (event) => {
     const user = await prisma.user.create({
       data: body,
     })
-
-    await updateSession(event, sessionConfig, { user })
 
     await prisma.$disconnect()
 
