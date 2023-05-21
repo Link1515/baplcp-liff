@@ -9,7 +9,7 @@ const route = useRoute()
 const activityId = route.params.activityId as string
 
 const activity = ref<Activity & { season: Season }>()
-const joinRecord = ref<(JoinRecordPerActivity & { user: User })[]>()
+const joinRecord = ref<(JoinRecordPerActivity & { user: User })[]>([])
 const userCurrentRecord = ref<JoinRecordPerActivity>()
 
 const beforeAllowedJoinDate = ref(true)
@@ -24,7 +24,7 @@ const getUserCurrentRecord = async () => {
 }
 
 let timer: NodeJS.Timer
-onMounted(async () => {
+onBeforeMount(async () => {
   activity.value = await $fetch<Activity & { season: Season }>(
     `/api/activity/${activityId}`
   )
@@ -97,7 +97,7 @@ const removeFromRecord = async () => {
 </script>
 
 <template>
-  <div v-if="activity && joinRecord">
+  <div v-if="activity">
     <header>
       <h1
         class="flex h-28 flex-col items-center justify-center bg-blue-950 text-center text-white"
@@ -131,11 +131,11 @@ const removeFromRecord = async () => {
     <div
       class="fixed bottom-0 flex h-16 w-full items-center justify-center bg-slate-300 px-4"
     >
-      <template v-if="afterJoinDeadline">
-        <span class="rounded-full bg-neutral-400 px-4 py-1">活動已截止</span>
-      </template>
-      <template v-else-if="beforeAllowedJoinDate">
+      <template v-if="beforeAllowedJoinDate">
         <span class="rounded-full bg-neutral-400 px-4 py-1">尚未開放</span>
+      </template>
+      <template v-else-if="afterJoinDeadline">
+        <span class="rounded-full bg-neutral-400 px-4 py-1">活動已截止</span>
       </template>
       <template v-else-if="userCurrentRecord">
         <button
