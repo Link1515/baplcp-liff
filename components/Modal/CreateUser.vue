@@ -51,8 +51,11 @@ const submit = async () => {
     </div>
     <div v-else class="flex flex-col items-center">
       <h2 class="mb-4 text-center text-xl">建立新用戶</h2>
-      <input type="text" v-model="userRealName" class="mb-4" />
-      <button @click="submit" :disabled="loading">送出</button>
+      <p>請輸入您的真實姓名，並附註介紹您的人</p>
+      <p>ex: 意倫(佳穎友)</p>
+      <input type="text" v-model="userRealName" />
+      <small class="text-neutral-500">* 此資料僅用於管理員識別身份</small>
+      <button @click="submit" :disabled="loading" class="mt-4">送出</button>
     </div>
   </VueFinalModal>
 </template>
