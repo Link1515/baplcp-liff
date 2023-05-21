@@ -84,6 +84,7 @@ export default defineEventHandler(async (event) => {
           create: sortedDates.map((date) => ({
             date: new Date(date),
             allowedJoinDate: subDays(new Date(date), 5),
+            joinDeadline: subDays(new Date(date), 2),
           })),
         },
       },
@@ -94,10 +95,16 @@ export default defineEventHandler(async (event) => {
 
     // add schedule to mongo
     await prisma.schedule.createMany({
-      data: season.activity.map((activity) => ({
-        triggerDateTime: new Date(activity.allowedJoinDate),
-        message: `${season.name} 開放報名！\n\n點此連結進入報名 https://liff.line.me/1657098399-wQyYzOee/season/${season.id}/${activity.id}`,
-      })),
+      data: [
+        ...season.activity.map((activity) => ({
+          triggerDateTime: new Date(activity.allowedJoinDate),
+          message: `${season.name} 開放報名！\n\n歡迎點此連結進入報名\nhttps://liff.line.me/1657098399-wQyYzOee/season/${season.id}/${activity.id}`,
+        })),
+        ...season.activity.map((activity) => ({
+          triggerDateTime: new Date(activity.joinDeadline),
+          message: `${season.name} 截止報名！\n\n立即查看本次名單：\nttps://liff.line.me/1657098399-wQyYzOee/season/${season.id}/${activity.id}`,
+        })),
+      ],
     })
 
     // add schedule to app script
@@ -108,6 +115,15 @@ export default defineEventHandler(async (event) => {
           method: 'post',
           body: {
             triggerDateTime: activity.allowedJoinDate,
+          },
+        }
+      )
+      await $fetch(
+        'https://script.google.com/macros/s/AKfycbzHvA1da15OgBd-xnClMGX_mwM90xngk6ouhOLxrjPi28Fql7UkwXWlrcH0912MNfsPzw/exec',
+        {
+          method: 'post',
+          body: {
+            triggerDateTime: activity.joinDeadline,
           },
         }
       )

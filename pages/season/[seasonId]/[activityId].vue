@@ -12,6 +12,9 @@ const activity = ref<Activity & { season: Season }>()
 const joinRecord = ref<(JoinRecordPerActivity & { user: User })[]>()
 const userCurrentRecord = ref<JoinRecordPerActivity>()
 
+const beforeAllowedJoinDate = ref(true)
+const afterJoinDeadline = ref(true)
+
 siteStore.loading = true
 
 const getUserCurrentRecord = async () => {
@@ -36,11 +39,18 @@ onMounted(async () => {
 
   await getUserCurrentRecord()
 
-  timer = setInterval(async () => {
-    joinRecord.value = await $fetch<(JoinRecordPerActivity & { user: User })[]>(
-      `/api/joinRecordPerActivity/${activityId}`
-    )
-  }, 5000)
+  beforeAllowedJoinDate.value =
+    compareAsc(new Date(activity.value.allowedJoinDate), new Date()) > 0
+  afterJoinDeadline.value =
+    compareAsc(new Date(), new Date(activity.value.joinDeadline)) > 0
+
+  if (!beforeAllowedJoinDate.value && !afterJoinDeadline.value) {
+    timer = setInterval(async () => {
+      joinRecord.value = await $fetch<
+        (JoinRecordPerActivity & { user: User })[]
+      >(`/api/joinRecordPerActivity/${activityId}`)
+    }, 5000)
+  }
 
   siteStore.loading = false
 })
@@ -119,10 +129,11 @@ const removeFromRecord = async () => {
     <div
       class="fixed bottom-0 flex h-16 w-full items-center justify-center bg-slate-300 px-4"
     >
-      <template
-        v-if="compareAsc(new Date(activity.allowedJoinDate), new Date()) > 0"
-      >
-        <span class="rounded-full bg-neutral-400 px-4 py-1"> 尚未開放 </span>
+      <template v-if="afterJoinDeadline">
+        <span class="rounded-full bg-neutral-400 px-4 py-1">活動已截止</span>
+      </template>
+      <template v-else-if="beforeAllowedJoinDate">
+        <span class="rounded-full bg-neutral-400 px-4 py-1">尚未開放</span>
       </template>
       <template v-else-if="userCurrentRecord">
         <button
