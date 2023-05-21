@@ -2,6 +2,17 @@
 export default defineNuxtConfig({
   app: {
     head: {
+      title: 'BAPLCP 報名活動報名系統',
+      meta: [
+        {
+          property: 'og:title',
+          content: 'BAPLCP 報名活動報名系統',
+        },
+        {
+          property: 'og:description',
+          content: '歡迎使用 BAPLCP 報名活動報名系統!',
+        },
+      ],
       link: [
         {
           rel: 'preload',
