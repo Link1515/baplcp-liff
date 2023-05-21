@@ -95,12 +95,25 @@ export default defineEventHandler(async (event) => {
       },
     })
 
-    // add schedule
-    prisma.schedule.createMany({
+    // add schedule to mongo
+    await prisma.schedule.createMany({
       data: season.activity.map((activity) => ({
         triggerDateTime: new Date(activity.allowedJoinDate),
-        message: `${season.name} 開放報名！`,
+        message: `${season.name} 開放報名！\n\n點此連結進入報名 https://liff.line.me/1657098399-wQyYzOee/season/${season.id}/${activity.id}`,
       })),
+    })
+
+    // add schedule to app script
+    season.activity.forEach(async (activity) => {
+      await $fetch(
+        'https://script.google.com/macros/s/AKfycbzHvA1da15OgBd-xnClMGX_mwM90xngk6ouhOLxrjPi28Fql7UkwXWlrcH0912MNfsPzw/exec',
+        {
+          method: 'post',
+          body: {
+            triggerDateTime: activity.allowedJoinDate,
+          },
+        }
+      )
     })
 
     await prisma.$disconnect()
