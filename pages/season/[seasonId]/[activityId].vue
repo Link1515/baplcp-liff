@@ -29,11 +29,7 @@ onMounted(async () => {
     `/api/activity/${activityId}`
   )
 
-  joinRecord.value = await $fetch<(JoinRecordPerActivity & { user: User })[]>(
-    `/api/joinRecordPerActivity/${activityId}`
-  )
-
-  if (!activity.value || !joinRecord.value) {
+  if (!activity.value) {
     await navigateTo('/')
   }
 
@@ -43,6 +39,12 @@ onMounted(async () => {
     compareAsc(new Date(activity.value.allowedJoinDate), new Date()) > 0
   afterJoinDeadline.value =
     compareAsc(new Date(), new Date(activity.value.joinDeadline)) > 0
+
+  if (!beforeAllowedJoinDate.value) {
+    joinRecord.value = await $fetch<(JoinRecordPerActivity & { user: User })[]>(
+      `/api/joinRecordPerActivity/${activityId}`
+    )
+  }
 
   if (!beforeAllowedJoinDate.value && !afterJoinDeadline.value) {
     timer = setInterval(async () => {
