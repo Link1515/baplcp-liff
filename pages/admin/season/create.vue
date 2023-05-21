@@ -169,7 +169,7 @@ const submit = async () => {
         />
       </div>
 
-      <div>
+      <!-- <div>
         <label for="toggleSeasonPayment" class="mb-2">
           <input
             v-model="form.enableSeasonPayment"
@@ -191,7 +191,7 @@ const submit = async () => {
             class="w-full rounded-md border border-gray-800 px-2 py-1 outline-none"
           />
         </template>
-      </div>
+      </div> -->
 
       <div class="flex flex-col gap-2">
         <h3 class="text-lg">時間</h3>

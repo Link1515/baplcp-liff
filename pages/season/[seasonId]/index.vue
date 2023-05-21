@@ -44,12 +44,12 @@ onBeforeMount(async () => {
         >
           <h2>{{ format(new Date(activity.date), 'yyyy/MM/dd (ccc.)') }}</h2>
         </NuxtLink>
-        <NuxtLink
+        <!-- <NuxtLink
           to="/season/1233/seasonMember"
           class="grid place-items-center bg-slate-300 py-2"
         >
           <h2>季打</h2>
-        </NuxtLink>
+        </NuxtLink> -->
       </div>
     </div>
   </div>

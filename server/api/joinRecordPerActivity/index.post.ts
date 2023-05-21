@@ -1,6 +1,7 @@
 import { z } from 'zod'
+import { compareAsc, format } from 'date-fns'
 import { prisma } from '~/server/prisma'
-import { ErrorWithCode, notFoundError } from '~/server/errors'
+import { ErrorWithCode, notFoundError, badRequestError } from '~/server/errors'
 
 const joinRecordPerActivityCreateBodySchema = z.object({
   userId: z
@@ -42,6 +43,15 @@ export default defineEventHandler(async (event) => {
       },
     })
     if (!activity) throw notFoundError('Activity not found')
+
+    if (compareAsc(new Date(activity.allowedJoinDate), new Date()) > 0) {
+      throw badRequestError(
+        `The activity will allow join at ${format(
+          new Date(activity.allowedJoinDate),
+          'yyyy/MM/dd (ccc.) kk:mm'
+        )}`
+      )
+    }
 
     const record = await prisma.joinRecordPerActivity.findFirst({
       where: {

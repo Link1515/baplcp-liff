@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { format } from 'date-fns'
+import { format, compareAsc } from 'date-fns'
 import { User, Activity, Season, JoinRecordPerActivity } from '@prisma/client'
 import { useUserStore, useSiteStore } from '~/stores'
 
@@ -115,7 +115,12 @@ const removeFromRecord = async () => {
     <div
       class="fixed bottom-0 flex h-16 w-full items-center justify-center bg-slate-300 px-4"
     >
-      <template v-if="userCurrentRecord">
+      <template
+        v-if="compareAsc(new Date(activity.allowedJoinDate), new Date()) > 0"
+      >
+        <span class="rounded-full bg-neutral-400 px-4 py-1"> 尚未開放 </span>
+      </template>
+      <template v-else-if="userCurrentRecord">
         <button
           @click="removeFromRecord"
           class="rounded-full bg-red-400 px-4 py-1"
