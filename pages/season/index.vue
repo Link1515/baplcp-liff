@@ -10,7 +10,7 @@ const seasonList = ref<Season[]>([])
 siteStore.loading = true
 
 onBeforeMount(async () => {
-  seasonList.value = await $fetch('/api/season')
+  seasonList.value = await $fetch<Season[]>('/api/season')
   siteStore.loading = false
 })
 </script>

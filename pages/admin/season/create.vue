@@ -102,7 +102,7 @@ const submit = async () => {
 
     resetForm()
 
-    await navigateTo('/admin/season')
+    await navigateTo('/admin/season', { replace: true })
   } catch (error) {
     if (error instanceof z.ZodError) {
       formErrors.value = {}
