@@ -53,6 +53,10 @@ export default defineEventHandler(async (event) => {
       )
     }
 
+    if (compareAsc(new Date(), new Date(activity.joinDeadline)) > 0) {
+      throw badRequestError(`The activity has ended`)
+    }
+
     const record = await prisma.joinRecordPerActivity.findFirst({
       where: {
         userId: body.userId,
