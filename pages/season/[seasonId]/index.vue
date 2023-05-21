@@ -15,6 +15,10 @@ onBeforeMount(async () => {
   season.value = await $fetch(`/api/season/${seasonId}`)
 
   siteStore.loading = false
+
+  if (!season.value) {
+    await navigateTo('/')
+  }
 })
 </script>
 

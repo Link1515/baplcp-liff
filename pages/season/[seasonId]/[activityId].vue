@@ -30,6 +30,10 @@ onMounted(async () => {
     `/api/joinRecordPerActivity/${activityId}`
   )
 
+  if (!activity.value || !joinRecord.value) {
+    await navigateTo('/')
+  }
+
   await getUserCurrentRecord()
 
   timer = setInterval(async () => {
