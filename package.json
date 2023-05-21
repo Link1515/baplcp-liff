@@ -8,7 +8,8 @@
     "db:type": "prisma generate",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "start": ".output/server/index.mjs"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.14",
