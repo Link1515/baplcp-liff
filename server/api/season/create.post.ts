@@ -62,8 +62,8 @@ type SeasonCreateBody = z.infer<typeof seasonCreateBodySchema>
 export default defineEventHandler(async (event) => {
   try {
     // TODO 記得解註解
-    // const session = await getSession(event, sessionConfig)
-    // if (!session.data.isAdmin) throw forbiddenError
+    const session = await getSession(event, sessionConfig)
+    if (!session.data.isAdmin) throw forbiddenError
 
     const body = await readBody<SeasonCreateBody>(event)
 
