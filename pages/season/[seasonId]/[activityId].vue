@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { format, compareAsc } from 'date-fns'
+import { compareAsc } from 'date-fns'
 import { User, Activity, Season, JoinRecordPerActivity } from '@prisma/client'
 import { useUserStore, useSiteStore } from '~/stores'
 
@@ -24,7 +24,7 @@ const getUserCurrentRecord = async () => {
 }
 
 let timer: NodeJS.Timer
-onBeforeMount(async () => {
+onMounted(async () => {
   activity.value = await $fetch<Activity & { season: Season }>(
     `/api/activity/${activityId}`
   )
@@ -98,32 +98,19 @@ const removeFromRecord = async () => {
 
 <template>
   <div v-if="activity">
-    <header>
-      <h1
-        class="flex h-28 flex-col items-center justify-center bg-blue-950 text-center text-white"
-      >
-        <span class="text-3xl">{{ activity.season.name }}</span>
-        <small class="text-xl">{{
-          format(new Date(activity.date), 'yyyy/MM/dd (ccc.)')
-        }}</small>
-      </h1>
-    </header>
+    <ActivityHeader :title="activity.season.name" :date-str="activity.date" />
 
     <div class="container py-8 pb-20">
-      <h3 class="text-center text-xl">
-        報名人數： {{ joinRecord.length }}/{{
-          activity.season.activityJoinLimit
-        }}
-      </h3>
-      <h3 class="mb-4 text-center text-xl">
-        費用： {{ activity.season.pricePerActivity }} NTD
-      </h3>
+      <ActivityInfo
+        :current-join-count="joinRecord.length"
+        :join-limit="activity.season.activityJoinLimit"
+        :price="activity.season.pricePerActivity"
+      />
 
       <ul>
         <li v-for="(record, index) in joinRecord" class="flex">
           <span class="mr-2">{{ index + 1 }}.</span>
           <span class="mr-auto">{{ record.user.name }}</span>
-          <span>報名成功</span>
         </li>
       </ul>
     </div>
