@@ -60,6 +60,10 @@ type SeasonCreateBody = z.infer<typeof seasonCreateBodySchema>
 
 export default defineEventHandler(async (event) => {
   try {
+    if (!process.env.APP_SCRIPT_URL)
+      throw new Error('Cannot found app script url')
+
+    const appScriptUrl = process.env.APP_SCRIPT_URL
     // TODO serverless 架構中 session 會失效，可能要另外檢查用戶使否為管理員
 
     const body = await readBody<SeasonCreateBody>(event)
@@ -107,26 +111,32 @@ export default defineEventHandler(async (event) => {
       ],
     })
 
-    // add schedule to app script
+    const adminUsers = await prisma.user.findMany({
+      where: { isAdmin: true },
+    })
+
     season.activity.forEach(async (activity) => {
-      await $fetch(
-        'https://script.google.com/macros/s/AKfycbzHvA1da15OgBd-xnClMGX_mwM90xngk6ouhOLxrjPi28Fql7UkwXWlrcH0912MNfsPzw/exec',
-        {
-          method: 'post',
-          body: {
-            triggerDateTime: activity.allowedJoinDate,
-          },
-        }
-      )
-      await $fetch(
-        'https://script.google.com/macros/s/AKfycbzHvA1da15OgBd-xnClMGX_mwM90xngk6ouhOLxrjPi28Fql7UkwXWlrcH0912MNfsPzw/exec',
-        {
-          method: 'post',
-          body: {
-            triggerDateTime: activity.joinDeadline,
-          },
-        }
-      )
+      // add schedule to app script
+      await $fetch(appScriptUrl, {
+        method: 'post',
+        body: {
+          triggerDateTime: activity.allowedJoinDate,
+        },
+      })
+      await $fetch(appScriptUrl, {
+        method: 'post',
+        body: {
+          triggerDateTime: activity.joinDeadline,
+        },
+      })
+
+      // admin autojoin
+      await prisma.joinRecordPerActivity.createMany({
+        data: adminUsers.map((user) => ({
+          userId: user.id,
+          activityId: activity.id,
+        })),
+      })
     })
 
     await prisma.$disconnect()
