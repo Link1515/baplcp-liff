@@ -44,17 +44,19 @@ export default defineEventHandler(async (event) => {
     })
     if (!activity) throw notFoundError('Activity not found')
 
-    if (compareAsc(new Date(activity.allowedJoinDate), new Date()) > 0) {
-      throw badRequestError(
-        `The activity will allow join at ${format(
-          new Date(activity.allowedJoinDate),
-          'yyyy/MM/dd (ccc.) kk:mm'
-        )}`
-      )
-    }
+    if (!user.isAdmin) {
+      if (compareAsc(new Date(activity.allowedJoinDate), new Date()) > 0) {
+        throw badRequestError(
+          `The activity will allow join at ${format(
+            new Date(activity.allowedJoinDate),
+            'yyyy/MM/dd (ccc.) kk:mm'
+          )}`
+        )
+      }
 
-    if (compareAsc(new Date(), new Date(activity.joinDeadline)) > 0) {
-      throw badRequestError(`The activity has ended`)
+      if (compareAsc(new Date(), new Date(activity.joinDeadline)) > 0) {
+        throw badRequestError(`The activity has ended`)
+      }
     }
 
     const record = await prisma.joinRecordPerActivity.findFirst({
