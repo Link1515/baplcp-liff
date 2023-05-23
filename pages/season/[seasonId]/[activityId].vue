@@ -7,54 +7,51 @@ const siteStore = useSiteStore()
 const userStore = useUserStore()
 const route = useRoute()
 const activityId = route.params.activityId as string
-
-const activity = ref<Activity & { season: Season }>()
-const joinRecord = ref<(JoinRecordPerActivity & { user: User })[]>([])
-const userCurrentRecord = ref<JoinRecordPerActivity>()
-
-const beforeAllowedJoinDate = ref(true)
-const afterJoinDeadline = ref(true)
+let timer: NodeJS.Timer
 
 siteStore.loading = true
 
-const getUserCurrentRecord = async () => {
-  userCurrentRecord.value = await $fetch<JoinRecordPerActivity>(
-    `/api/joinRecordPerActivity/getUserRecord/${userStore.id}/${activityId}`
-  )
+/**
+ * activity data
+ */
+const activity = ref<Activity & { season: Season }>()
+
+activity.value = await $fetch<Activity & { season: Season }>(
+  `/api/activity/${activityId}`
+)
+if (!activity.value) {
+  await navigateTo('/')
 }
 
-let timer: NodeJS.Timer
+const beforeAllowedJoinDate = ref(false)
+const afterJoinDeadline = ref(false)
+
+beforeAllowedJoinDate.value =
+  compareAsc(new Date(activity.value.allowedJoinDate), new Date()) > 0
+afterJoinDeadline.value =
+  compareAsc(new Date(), new Date(activity.value.joinDeadline)) > 0
+
+/**
+ * join record
+ */
+const { data: joinRecord, refresh: refreshJoinRecord } = await useFetch<
+  (JoinRecordPerActivity & { user: User })[]
+>(`/api/joinRecordPerActivity/${activityId}`)
+
+const userCurrentRecord = computed(() =>
+  joinRecord.value?.find((record) => record.userId === userStore.id)
+)
+
+siteStore.loading = false
+
 onMounted(async () => {
-  activity.value = await $fetch<Activity & { season: Season }>(
-    `/api/activity/${activityId}`
-  )
-
-  if (!activity.value) {
-    await navigateTo('/')
-  }
-
-  await getUserCurrentRecord()
-
-  beforeAllowedJoinDate.value =
-    compareAsc(new Date(activity.value.allowedJoinDate), new Date()) > 0
-  afterJoinDeadline.value =
-    compareAsc(new Date(), new Date(activity.value.joinDeadline)) > 0
-
-  if (!beforeAllowedJoinDate.value) {
-    joinRecord.value = await $fetch<(JoinRecordPerActivity & { user: User })[]>(
-      `/api/joinRecordPerActivity/${activityId}`
-    )
-  }
-
   if (!beforeAllowedJoinDate.value && !afterJoinDeadline.value) {
-    timer = setInterval(async () => {
-      joinRecord.value = await $fetch<
-        (JoinRecordPerActivity & { user: User })[]
-      >(`/api/joinRecordPerActivity/${activityId}`)
-    }, 5000)
+    // timer = setInterval(async () => {
+    //   joinRecord.value = await $fetch<
+    //     (JoinRecordPerActivity & { user: User })[]
+    //   >(`/api/joinRecordPerActivity/${activityId}`)
+    // }, 5000)
   }
-
-  siteStore.loading = false
 })
 
 onUnmounted(() => {
@@ -64,6 +61,7 @@ onUnmounted(() => {
 const join = async () => {
   try {
     siteStore.loading = true
+
     await $fetch('/api/joinRecordPerActivity', {
       method: 'post',
       body: {
@@ -71,25 +69,23 @@ const join = async () => {
         activityId,
       },
     })
-
-    await getUserCurrentRecord()
+    await refreshJoinRecord()
 
     siteStore.loading = false
   } catch (error) {}
 }
 
 const removeFromRecord = async () => {
-  if (!userCurrentRecord.value) return
-
   try {
+    if (!userCurrentRecord.value) return
+
     siteStore.loading = true
 
     await $fetch(
       `/api/joinRecordPerActivity/delete/${userCurrentRecord.value.id}`,
       { method: 'post' }
     )
-
-    userCurrentRecord.value = undefined
+    await refreshJoinRecord()
 
     siteStore.loading = false
   } catch (error) {}
@@ -97,9 +93,8 @@ const removeFromRecord = async () => {
 </script>
 
 <template>
-  <div v-if="activity">
+  <div v-if="activity && joinRecord">
     <ActivityHeader :title="activity.season.name" :date-str="activity.date" />
-
     <div class="container py-8 pb-20">
       <ActivityInfo
         :current-join-count="joinRecord.length"
