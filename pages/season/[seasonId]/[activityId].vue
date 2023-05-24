@@ -33,9 +33,13 @@ afterJoinDeadline.value =
 /**
  * join record
  */
-const { data: joinRecord, refresh: refreshJoinRecord } = await useFetch<
-  (JoinRecordPerActivity & { user: User })[]
->(`/api/joinRecordPerActivity/${activityId}`)
+const {
+  data: joinRecord,
+  refresh: refreshJoinRecord,
+  pending: joinRecordPending,
+} = await useFetch<(JoinRecordPerActivity & { user: User })[]>(
+  `/api/joinRecordPerActivity/${activityId}`
+)
 
 const userCurrentRecord = computed(() =>
   joinRecord.value?.find((record) => record.userId === userStore.id)
@@ -104,35 +108,29 @@ const removeFromRecord = async () => {
       </ul>
     </div>
 
-    <ClientOnly>
-      <div
-        class="fixed bottom-0 flex h-16 w-full items-center justify-center bg-slate-300 px-4"
+    <div
+      v-show="!joinRecordPending"
+      class="fixed bottom-0 flex h-16 w-full items-center justify-center bg-slate-300 px-4"
+    >
+      <span
+        v-if="beforeAllowedJoinDate"
+        class="rounded-full bg-neutral-400 px-4 py-1"
+        >尚未開放</span
       >
-        <span
-          v-if="beforeAllowedJoinDate"
-          class="rounded-full bg-neutral-400 px-4 py-1"
-          >尚未開放</span
-        >
-        <span
-          v-else-if="afterJoinDeadline"
-          class="rounded-full bg-neutral-400 px-4 py-1"
-          >報名已截止</span
-        >
-        <button
-          v-else-if="userCurrentRecord"
-          @click="removeFromRecord"
-          class="rounded-full bg-red-400 px-4 py-1"
-        >
-          取消報名
-        </button>
-        <button
-          v-else
-          @click="join"
-          class="rounded-full bg-green-500 px-4 py-1"
-        >
-          立即報名
-        </button>
-      </div>
-    </ClientOnly>
+      <span
+        v-else-if="afterJoinDeadline"
+        class="rounded-full bg-neutral-400 px-4 py-1"
+        >報名已截止</span
+      >
+      <span
+        v-else-if="userCurrentRecord"
+        class="rounded-full bg-green-500 px-4 py-1"
+      >
+        已報名
+      </span>
+      <button v-else @click="join" class="rounded-full bg-green-500">
+        立即報名
+      </button>
+    </div>
   </div>
 </template>
