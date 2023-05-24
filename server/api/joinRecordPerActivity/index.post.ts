@@ -31,9 +31,7 @@ export default defineEventHandler(async (event) => {
     joinRecordPerActivityCreateBodySchema.parse(body)
 
     const user = await prisma.user.findUnique({
-      where: {
-        id: body.userId,
-      },
+      where: { id: body.userId },
     })
     if (!user) throw notFoundError('User not found')
 
