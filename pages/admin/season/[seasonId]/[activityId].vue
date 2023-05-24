@@ -1,44 +1,60 @@
 <script setup lang="ts">
 import { User, Activity, Season, JoinRecordPerActivity } from '@prisma/client'
 import { useUserStore, useSiteStore } from '~/stores'
+import ModalConfirm from '~/components/Modal/Confirm.vue'
 
 const siteStore = useSiteStore()
-const userStore = useUserStore()
 const route = useRoute()
 const activityId = route.params.activityId as string
 
-const activity = ref<Activity & { season: Season }>()
-const joinRecord = ref<(JoinRecordPerActivity & { user: User })[]>([])
-const userCurrentRecord = ref<JoinRecordPerActivity>()
-
 siteStore.loading = true
 
-const getUserCurrentRecord = async () => {
-  userCurrentRecord.value = await $fetch<JoinRecordPerActivity>(
-    `/api/joinRecordPerActivity/getUserRecord/${userStore.id}/${activityId}`
-  )
+/**
+ * activity data
+ */
+const activity = ref<Activity & { season: Season }>()
+
+activity.value = await $fetch<Activity & { season: Season }>(
+  `/api/activity/${activityId}`
+)
+if (!activity.value) {
+  await navigateTo('/')
 }
 
-onBeforeMount(async () => {
-  activity.value = await $fetch<Activity & { season: Season }>(
-    `/api/activity/${activityId}`
-  )
+/**
+ * join record
+ */
+const { data: joinRecord, refresh: refreshJoinRecord } = await useFetch<
+  (JoinRecordPerActivity & { user: User })[]
+>(`/api/joinRecordPerActivity/${activityId}`)
 
-  if (!activity.value) {
-    await navigateTo('/')
-  }
+siteStore.loading = false
 
-  await getUserCurrentRecord()
+/**
+ * actions
+ */
+const removeTargetRecord = ref<JoinRecordPerActivity & { user: User }>()
+const modalConfirmIsOpened = ref(false)
 
-  joinRecord.value = await $fetch<(JoinRecordPerActivity & { user: User })[]>(
-    `/api/joinRecordPerActivity/${activityId}`
-  )
+const removeFromRecord = async () => {
+  try {
+    modalConfirmIsOpened.value = false
+    if (!removeTargetRecord.value) return
 
-  siteStore.loading = false
-})
+    siteStore.loading = true
+
+    await $fetch(
+      `/api/joinRecordPerActivity/delete/${removeTargetRecord.value.id}`,
+      { method: 'post' }
+    )
+    await refreshJoinRecord()
+
+    siteStore.loading = false
+  } catch (error) {}
+}
 </script>
 <template>
-  <div v-if="activity">
+  <div v-if="activity && joinRecord">
     <ActivityHeader :title="activity.season.name" :date-str="activity.date" />
 
     <div class="container py-8 pb-20">
@@ -52,8 +68,26 @@ onBeforeMount(async () => {
         <li v-for="(record, index) in joinRecord" class="flex">
           <span class="mr-2">{{ index + 1 }}.</span>
           <span class="mr-auto">{{ record.user.name }}</span>
+          <button
+            @click="
+              () => {
+                modalConfirmIsOpened = true
+                removeTargetRecord = record
+              }
+            "
+            class="rounded-full bg-red-400 px-4 py-1"
+          >
+            移除
+          </button>
         </li>
       </ul>
     </div>
+
+    <ModalConfirm
+      v-model="modalConfirmIsOpened"
+      @comfirm="removeFromRecord"
+      @close="modalConfirmIsOpened = false"
+      >是否要移除 {{ removeTargetRecord?.user.name }} ?</ModalConfirm
+    >
   </div>
 </template>
