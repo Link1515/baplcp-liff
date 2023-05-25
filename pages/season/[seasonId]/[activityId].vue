@@ -88,7 +88,7 @@ const join = async () => {
             <img
               v-show="record.hasPaid"
               src="/images/icons/dollar.png"
-              class="mr-2 h-full"
+              class="mr-2 h-6 w-6"
               alt="dollar"
             />
           </div>
