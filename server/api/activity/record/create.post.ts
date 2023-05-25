@@ -61,16 +61,17 @@ export default defineEventHandler(async (event) => {
       where: {
         userId: body.userId,
         activityId: body.activityId,
-        active: false,
       },
     })
 
     record
       ? await prisma.joinRecordPerActivity.update({
           where: { id: record.id },
-          data: { active: true },
+          data: { active: true, joinedAt: new Date() },
         })
-      : await prisma.joinRecordPerActivity.create({ data: body })
+      : await prisma.joinRecordPerActivity.create({
+          data: { ...body, joinedAt: new Date() },
+        })
 
     await prisma.$disconnect()
 

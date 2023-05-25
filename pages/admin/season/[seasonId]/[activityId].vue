@@ -26,7 +26,7 @@ if (!activity.value) {
  */
 const { data: joinRecord, refresh: refreshJoinRecord } = await useFetch<
   (JoinRecordPerActivity & { user: User })[]
->(`/api/joinRecordPerActivity/${activityId}`)
+>(`/api/activity/record/${activityId}`)
 
 siteStore.loading = false
 

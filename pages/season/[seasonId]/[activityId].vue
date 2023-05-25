@@ -38,7 +38,7 @@ const {
   refresh: refreshJoinRecord,
   pending: joinRecordPending,
 } = await useFetch<(JoinRecordPerActivity & { user: User })[]>(
-  `/api/joinRecordPerActivity/${activityId}`
+  `/api/activity/record/${activityId}`
 )
 
 const userCurrentRecord = computed(() =>
@@ -55,7 +55,7 @@ const join = async () => {
     joinPending = true
     siteStore.loading = true
 
-    await $fetch('/api/joinRecordPerActivity', {
+    await $fetch('/api/activity/record/create', {
       method: 'post',
       body: {
         userId: userStore.id,
