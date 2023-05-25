@@ -38,7 +38,7 @@ const {
   refresh: refreshJoinRecord,
   pending: joinRecordPending,
 } = await useFetch<(JoinRecordPerActivity & { user: User })[]>(
-  `/api/joinRecordPerActivity/${activityId}`
+  `/api/activity/record/${activityId}`
 )
 
 const userCurrentRecord = computed(() =>
@@ -55,7 +55,7 @@ const join = async () => {
     joinPending = true
     siteStore.loading = true
 
-    await $fetch('/api/joinRecordPerActivity', {
+    await $fetch('/api/activity/record/create', {
       method: 'post',
       body: {
         userId: userStore.id,
@@ -65,26 +65,6 @@ const join = async () => {
     await refreshJoinRecord()
 
     joinPending = false
-    siteStore.loading = false
-  } catch (error) {}
-}
-
-let removePending = false
-const removeFromRecord = async () => {
-  try {
-    if (removePending) return
-    if (!userCurrentRecord.value) return
-
-    removePending = true
-    siteStore.loading = true
-
-    await $fetch(
-      `/api/joinRecordPerActivity/delete/${userCurrentRecord.value.id}`,
-      { method: 'post' }
-    )
-    await refreshJoinRecord()
-
-    removePending = false
     siteStore.loading = false
   } catch (error) {}
 }
@@ -100,10 +80,18 @@ const removeFromRecord = async () => {
         :price="activity.season.pricePerActivity"
       />
 
-      <ul>
-        <li v-for="(record, index) in joinRecord" class="flex">
+      <ul class="divide-y divide-neutral-300">
+        <li v-for="(record, index) in joinRecord" class="flex py-2">
           <span class="mr-2">{{ index + 1 }}.</span>
           <span class="mr-auto">{{ record.user.name }}</span>
+          <div class="h-6">
+            <img
+              v-show="record.hasPaid"
+              src="/images/icons/dollar.png"
+              class="mr-2 h-full"
+              alt="dollar"
+            />
+          </div>
         </li>
       </ul>
     </div>

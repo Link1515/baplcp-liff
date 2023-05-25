@@ -1,1 +1,2 @@
 - [db diagram](https://dbdiagram.io/d/64259d9c5758ac5f17257e73)
+- [service diagram](https://excalidraw.com/#json=wc6QmaBiEQU9j5Ooma1dh,dBRuTd4EY7eBvyEfQPX3Iw)

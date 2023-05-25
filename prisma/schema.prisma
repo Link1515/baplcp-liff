@@ -74,6 +74,7 @@ model JoinRecordPerActivity {
   userId String @db.ObjectId
   activity Activity @relation(fields: [activityId], references: [id])
   activityId String @db.ObjectId
+  joinedAt DateTime?
   active Boolean @default(true)
   hasPaid Boolean @default(false)
   addBySeason Boolean @default(false)

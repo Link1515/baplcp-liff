@@ -3,7 +3,7 @@ import { format } from 'date-fns'
 
 defineProps<{
   title: string
-  dateStr: Date
+  dateStr: Date | string
 }>()
 </script>
 

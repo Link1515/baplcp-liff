@@ -2,16 +2,17 @@ import { prisma } from '~/server/prisma'
 
 export default defineEventHandler(async (event) => {
   try {
-    const userId = event.context.params?.userId as string
     const activityId = event.context.params?.activityId as string
 
-    const record = await prisma.joinRecordPerActivity.findFirst({
-      where: { userId, activityId, active: true },
+    const records = prisma.joinRecordPerActivity.findMany({
+      where: { activityId, active: true },
+      orderBy: [{ user: { isAdmin: 'desc' } }, { joinedAt: 'asc' }],
+      include: { user: true },
     })
 
     await prisma.$disconnect()
 
-    return record
+    return records
   } catch (error) {
     await prisma.$disconnect()
 
