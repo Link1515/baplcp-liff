@@ -103,7 +103,7 @@ const setRecordHadPaid = async (hasPaid: boolean) => {
             <img
               v-show="record.hasPaid"
               src="/images/icons/dollar.png"
-              class="mr-2 h-full"
+              class="mr-2 h-6 w-6"
               alt="dollar"
             />
           </div>
@@ -111,7 +111,7 @@ const setRecordHadPaid = async (hasPaid: boolean) => {
             v-model="pickedRecords"
             :value="record.id"
             type="checkbox"
-            class="h-4 w-4 appearance-none checked:bg-blue-500"
+            class="h-4 w-4"
           />
         </li>
       </ul>
