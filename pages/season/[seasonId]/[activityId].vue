@@ -68,26 +68,6 @@ const join = async () => {
     siteStore.loading = false
   } catch (error) {}
 }
-
-let removePending = false
-const removeFromRecord = async () => {
-  try {
-    if (removePending) return
-    if (!userCurrentRecord.value) return
-
-    removePending = true
-    siteStore.loading = true
-
-    await $fetch(
-      `/api/joinRecordPerActivity/delete/${userCurrentRecord.value.id}`,
-      { method: 'post' }
-    )
-    await refreshJoinRecord()
-
-    removePending = false
-    siteStore.loading = false
-  } catch (error) {}
-}
 </script>
 
 <template>

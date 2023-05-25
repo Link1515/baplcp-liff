@@ -24,7 +24,7 @@ const loading = ref(false)
         <slot />
       </p>
       <div class="flex gap-4">
-        <button @click="emit('comfirm')" class="bg-green-500">確認</button>
+        <button @click="emit('comfirm')" class="bg-green-500">確定</button>
         <button @click="emit('close')" class="bg-neutral-400">取消</button>
       </div>
     </div>
