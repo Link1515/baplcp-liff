@@ -80,10 +80,18 @@ const join = async () => {
         :price="activity.season.pricePerActivity"
       />
 
-      <ul>
-        <li v-for="(record, index) in joinRecord" class="flex">
+      <ul class="divide-y divide-neutral-300">
+        <li v-for="(record, index) in joinRecord" class="flex py-2">
           <span class="mr-2">{{ index + 1 }}.</span>
           <span class="mr-auto">{{ record.user.name }}</span>
+          <div class="h-6">
+            <img
+              v-show="record.hasPaid"
+              src="/images/icons/dollar.png"
+              class="mr-2 h-full"
+              alt="dollar"
+            />
+          </div>
         </li>
       </ul>
     </div>
