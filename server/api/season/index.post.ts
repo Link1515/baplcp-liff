@@ -2,15 +2,17 @@ import { format } from 'date-fns'
 import { subDays, compareAsc } from 'date-fns'
 import { errorHandler } from '~/server/errors'
 import { prisma } from '~/server/prisma'
+import { checkAdminStatus } from '~/server/session'
 import { seasonPostBodySchema, SeasonPostBodySchema } from '~/server/bodySchema'
 
 export default defineEventHandler(async (event) => {
   try {
+    await checkAdminStatus(event)
+
     if (!process.env.APP_SCRIPT_URL)
       throw new Error('Cannot found app script url')
 
     const appScriptUrl = process.env.APP_SCRIPT_URL
-    // TODO serverless 架構中 session 會失效，可能要另外檢查用戶使否為管理員
 
     const body = await readBody<SeasonPostBodySchema>(event)
 
