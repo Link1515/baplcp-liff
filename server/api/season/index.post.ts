@@ -53,13 +53,13 @@ export default defineEventHandler(async (event) => {
             `費用：${season.pricePerActivity}\n` +
             `人數：${season.activityJoinLimit}\n\n` +
             '歡迎點此連結進入報名\n' +
-            `https://liff.line.me/1657098399-wQyYzOee/season/${season.id}/${activity.id}`,
+            `https://liff.line.me/1657098399-wQyYzOee/activity/${activity.id}`,
         })),
         ...season.activity.map((activity) => ({
           triggerDateTime: new Date(activity.joinDeadline),
           message:
             `${season.name} 截止報名！\n\n` +
-            `立即查看本次名單：\nhttps://liff.line.me/1657098399-wQyYzOee/season/${season.id}/${activity.id}`,
+            `立即查看本次名單：\nhttps://liff.line.me/1657098399-wQyYzOee/activity/${activity.id}`,
         })),
       ],
     })

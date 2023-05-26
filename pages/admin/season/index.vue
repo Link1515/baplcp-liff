@@ -5,14 +5,11 @@ import { useSiteStore } from '~/stores'
 
 const siteStore = useSiteStore()
 
-const seasonList = ref<Season[]>([])
-
 siteStore.loading = true
 
-onBeforeMount(async () => {
-  seasonList.value = await $fetch('/api/season')
-  siteStore.loading = false
-})
+const { data: seasonList } = await useFetch<Season[]>('/api/season')
+
+siteStore.loading = false
 </script>
 
 <template>

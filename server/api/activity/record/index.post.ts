@@ -18,9 +18,7 @@ export default defineEventHandler(async (event) => {
     if (!user) throw notFoundError('User not found')
 
     const activity = await prisma.activity.findUnique({
-      where: {
-        id: body.activityId,
-      },
+      where: { id: body.activityId },
     })
     if (!activity) throw notFoundError('Activity not found')
 

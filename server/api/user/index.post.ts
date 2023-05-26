@@ -8,9 +8,7 @@ export default defineEventHandler(async (event) => {
 
     userPostBodySchema.parse(body)
 
-    const user = await prisma.user.create({
-      data: body,
-    })
+    const user = await prisma.user.create({ data: body })
 
     await prisma.$disconnect()
 
