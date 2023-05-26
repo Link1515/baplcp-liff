@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { format } from 'date-fns'
 import { subDays, compareAsc } from 'date-fns'
-import { ErrorWithCode, forbiddenError } from '~/server/errors'
+import { ErrorWithCode } from '~/server/errors'
 import { prisma } from '~/server/prisma'
 
 const seasonCreateBodySchema = z
@@ -126,13 +126,13 @@ export default defineEventHandler(async (event) => {
     season.activity.forEach(async (activity) => {
       // add schedule to app script
       await $fetch(appScriptUrl, {
-        method: 'post',
+        method: 'POST',
         body: {
           triggerDateTime: activity.allowedJoinDate,
         },
       })
       await $fetch(appScriptUrl, {
-        method: 'post',
+        method: 'POST',
         body: {
           triggerDateTime: activity.joinDeadline,
         },

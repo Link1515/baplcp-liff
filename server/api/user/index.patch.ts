@@ -15,7 +15,6 @@ const userUpdateBodySchema = z.object({
 
 type userUpdateBody = z.infer<typeof userUpdateBodySchema>
 
-// TODO we cannot use http patch method on ngrok. Maybe try patch on production env (cyclic).
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody<userUpdateBody>(event)

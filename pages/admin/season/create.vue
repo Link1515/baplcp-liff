@@ -95,8 +95,8 @@ const submit = async () => {
     const validatedForm = seasonCreateFormSchema.parse(form.value)
 
     siteStore.loading = true
-    await $fetch('/api/season/create', {
-      method: 'post',
+    await $fetch('/api/season', {
+      method: 'POST',
       body: validatedForm,
     })
 

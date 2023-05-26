@@ -55,8 +55,8 @@ const join = async () => {
     joinPending = true
     siteStore.loading = true
 
-    await $fetch('/api/activity/record/create', {
-      method: 'post',
+    await $fetch('/api/activity/record', {
+      method: 'POST',
       body: {
         userId: userStore.id,
         activityId,

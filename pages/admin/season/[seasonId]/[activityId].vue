@@ -42,8 +42,8 @@ const removeRecords = async () => {
     if (pickedRecords.value.length < 0) return
 
     siteStore.loading = true
-    await $fetch('/api/activity/record/update', {
-      method: 'post',
+    await $fetch('/api/activity/record', {
+      method: 'PATCH',
       body: {
         recordIds: pickedRecords.value,
         data: { active: false },
@@ -63,8 +63,8 @@ const setRecordHadPaid = async (hasPaid: boolean) => {
     if (pickedRecords.value.length < 0) return
 
     siteStore.loading = true
-    await $fetch('/api/activity/record/update', {
-      method: 'post',
+    await $fetch('/api/activity/record', {
+      method: 'PATCH',
       body: {
         recordIds: pickedRecords.value,
         data: { hasPaid },

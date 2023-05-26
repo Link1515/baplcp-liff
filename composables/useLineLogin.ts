@@ -53,8 +53,8 @@ export const useLineLogin = () => {
 
       // sync user line data to db
       if (user.name !== name || user.avatar !== avatar) {
-        await $fetch('/api/user/update', {
-          method: 'post',
+        await $fetch('/api/user', {
+          method: 'PATCH',
           body: {
             userId: user.id,
             name,

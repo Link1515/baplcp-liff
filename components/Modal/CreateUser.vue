@@ -18,8 +18,8 @@ const submit = async () => {
 
   loading.value = true
 
-  const user = await $fetch<User>(`/api/user/create`, {
-    method: 'post',
+  const user = await $fetch<User>(`/api/user`, {
+    method: 'POST',
     body: {
       lineId: userStore.lineId,
       realName: userRealName.value,
