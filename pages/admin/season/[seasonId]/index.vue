@@ -7,14 +7,18 @@ const siteStore = useSiteStore()
 const route = useRoute()
 const seasonId = route.params.seasonId as string
 
-const season = ref<Season & { activity: Activity[] }>()
-
 siteStore.loading = true
 
-onBeforeMount(async () => {
-  season.value = await $fetch(`/api/season/${seasonId}`)
+const { data: season } = await useFetch<Season & { activity: Activity[] }>(
+  `/api/season/${seasonId}`
+)
 
-  siteStore.loading = false
+siteStore.loading = false
+
+watchEffect(() => {
+  if (!season.value) {
+    return navigateTo('/')
+  }
 })
 </script>
 
@@ -39,7 +43,7 @@ onBeforeMount(async () => {
       <div class="flex flex-col gap-4 text-center">
         <NuxtLink
           v-for="activity in season.activity"
-          :to="`/admin/season/${seasonId}/${activity.id}`"
+          :to="`/admin/activity/${activity.id}`"
           class="grid place-items-center bg-slate-300 py-2"
         >
           <h2>{{ format(new Date(activity.date), 'yyyy/MM/dd (ccc.)') }}</h2>

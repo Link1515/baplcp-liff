@@ -1,4 +1,5 @@
 import { prisma } from '~/server/prisma'
+import { errorHandler } from '~/server/errors'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -14,11 +15,6 @@ export default defineEventHandler(async (event) => {
 
     return records
   } catch (error) {
-    await prisma.$disconnect()
-
-    throw createError({
-      statusCode: 500,
-      statusMessage: 'Server error',
-    })
+    await errorHandler(error)
   }
 })

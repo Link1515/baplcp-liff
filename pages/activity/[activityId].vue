@@ -13,22 +13,20 @@ siteStore.loading = true
 /**
  * activity data
  */
-const activity = ref<Activity & { season: Season }>()
+const { data: activity, pending: activityPending } = useFetch<
+  Activity & { season: Season }
+>(`/api/activity/${activityId}`)
 
-activity.value = await $fetch<Activity & { season: Season }>(
-  `/api/activity/${activityId}`
+const beforeAllowedJoinDate = computed(() =>
+  activity.value
+    ? compareAsc(new Date(activity.value.allowedJoinDate), new Date()) > 0
+    : false
 )
-if (!activity.value) {
-  await navigateTo('/')
-}
-
-const beforeAllowedJoinDate = ref(false)
-const afterJoinDeadline = ref(false)
-
-beforeAllowedJoinDate.value =
-  compareAsc(new Date(activity.value.allowedJoinDate), new Date()) > 0
-afterJoinDeadline.value =
-  compareAsc(new Date(), new Date(activity.value.joinDeadline)) > 0
+const afterJoinDeadline = computed(() =>
+  activity.value
+    ? compareAsc(new Date(), new Date(activity.value.joinDeadline)) > 0
+    : false
+)
 
 /**
  * join record
@@ -37,7 +35,7 @@ const {
   data: joinRecord,
   refresh: refreshJoinRecord,
   pending: joinRecordPending,
-} = await useFetch<(JoinRecordPerActivity & { user: User })[]>(
+} = useFetch<(JoinRecordPerActivity & { user: User })[]>(
   `/api/activity/record/${activityId}`
 )
 
@@ -45,18 +43,25 @@ const userCurrentRecord = computed(() =>
   joinRecord.value?.find((record) => record.userId === userStore.id)
 )
 
-siteStore.loading = false
+/**
+ * loading finish when all fetch pending is false
+ */
+watchEffect(() => {
+  if (activityPending.value || joinRecordPending.value) return
+  if (!userStore.id) return
+  if (!activity.value) return navigateTo('/')
 
-let joinPending = false
+  siteStore.loading = false
+})
+
 const join = async () => {
   try {
-    if (joinPending) return
+    if (joinRecordPending) return
 
-    joinPending = true
     siteStore.loading = true
 
-    await $fetch('/api/activity/record/create', {
-      method: 'post',
+    await $fetch('/api/activity/record', {
+      method: 'POST',
       body: {
         userId: userStore.id,
         activityId,
@@ -64,7 +69,6 @@ const join = async () => {
     })
     await refreshJoinRecord()
 
-    joinPending = false
     siteStore.loading = false
   } catch (error) {}
 }
@@ -97,7 +101,6 @@ const join = async () => {
     </div>
 
     <div
-      v-show="!joinRecordPending"
       class="fixed bottom-0 flex h-16 w-full items-center justify-center bg-slate-300 px-4"
     >
       <span
