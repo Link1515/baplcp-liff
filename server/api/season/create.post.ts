@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { format } from 'date-fns'
 import { subDays, compareAsc } from 'date-fns'
 import { ErrorWithCode, forbiddenError } from '~/server/errors'
 import { prisma } from '~/server/prisma'
@@ -92,9 +93,7 @@ export default defineEventHandler(async (event) => {
           })),
         },
       },
-      include: {
-        activity: true,
-      },
+      include: { activity: true },
     })
 
     // add schedule to mongo
@@ -102,11 +101,20 @@ export default defineEventHandler(async (event) => {
       data: [
         ...season.activity.map((activity) => ({
           triggerDateTime: new Date(activity.allowedJoinDate),
-          message: `${season.name} 開放報名！\n\n歡迎點此連結進入報名\nhttps://liff.line.me/1657098399-wQyYzOee/season/${season.id}/${activity.id}`,
+          message:
+            `${season.name} 開放報名！\n\n` +
+            `日期：${format(new Date(activity.date), 'yyyy/MM/dd (ccc.)')}\n` +
+            `時間：${season.activityStartTime} ~ ${season.activityEndTime}\n` +
+            `費用：${season.pricePerActivity}\n` +
+            `人數：${season.activityJoinLimit}\n\n` +
+            '歡迎點此連結進入報名\n' +
+            `https://liff.line.me/1657098399-wQyYzOee/season/${season.id}/${activity.id}`,
         })),
         ...season.activity.map((activity) => ({
           triggerDateTime: new Date(activity.joinDeadline),
-          message: `${season.name} 截止報名！\n\n立即查看本次名單：\nttps://liff.line.me/1657098399-wQyYzOee/season/${season.id}/${activity.id}`,
+          message:
+            `${season.name} 截止報名！\n\n` +
+            `立即查看本次名單：\nhttps://liff.line.me/1657098399-wQyYzOee/season/${season.id}/${activity.id}`,
         })),
       ],
     })
