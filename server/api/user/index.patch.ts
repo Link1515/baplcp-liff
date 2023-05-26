@@ -1,25 +1,12 @@
-import { z } from 'zod'
 import { errorHandler, badRequestError } from '~/server/errors'
 import { prisma } from '~/server/prisma'
-
-const userUpdateBodySchema = z.object({
-  userId: z.string({
-    invalid_type_error: 'userId must be a string.',
-    required_error: 'userId is required.',
-  }),
-  name: z.string({ invalid_type_error: 'name must be a string.' }).optional(),
-  avatar: z
-    .string({ invalid_type_error: 'avatar must be a string.' })
-    .optional(),
-})
-
-type userUpdateBody = z.infer<typeof userUpdateBodySchema>
+import { userPatchBodySchema, UserPatchBodySchema } from '~/server/bodySchema'
 
 export default defineEventHandler(async (event) => {
   try {
-    const body = await readBody<userUpdateBody>(event)
+    const body = await readBody<UserPatchBodySchema>(event)
 
-    userUpdateBodySchema.parse(body)
+    userPatchBodySchema.parse(body)
 
     if (!body.name && !body.avatar)
       throw badRequestError(

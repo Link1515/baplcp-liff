@@ -1,34 +1,16 @@
-import { z } from 'zod'
 import { compareAsc, format } from 'date-fns'
 import { prisma } from '~/server/prisma'
 import { errorHandler, notFoundError, badRequestError } from '~/server/errors'
-
-const joinRecordPerActivityCreateBodySchema = z.object({
-  userId: z
-    .string({
-      required_error: 'userId is required.',
-      invalid_type_error: 'userId must be a string.',
-    })
-    .min(24, { message: 'userId length must be 24' })
-    .max(24, { message: 'userId length must be 24' }),
-  activityId: z
-    .string({
-      required_error: 'activityId is required.',
-      invalid_type_error: 'activityId must be a string.',
-    })
-    .min(24, { message: 'activityId length must be 24' })
-    .max(24, { message: 'activityId length must be 24' }),
-})
-
-type JoinRecordPerActivityCreateBody = z.infer<
-  typeof joinRecordPerActivityCreateBodySchema
->
+import {
+  activityRecordPostBodySchema,
+  ActivityRecordPostBodySchema,
+} from '~/server/bodySchema'
 
 export default defineEventHandler(async (event) => {
   try {
-    const body = await readBody<JoinRecordPerActivityCreateBody>(event)
+    const body = await readBody<ActivityRecordPostBodySchema>(event)
 
-    joinRecordPerActivityCreateBodySchema.parse(body)
+    activityRecordPostBodySchema.parse(body)
 
     const user = await prisma.user.findUnique({
       where: { id: body.userId },
