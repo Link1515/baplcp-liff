@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { format } from 'date-fns'
 import { subDays, compareAsc } from 'date-fns'
-import { ErrorWithCode } from '~/server/errors'
+import { errorHandler } from '~/server/errors'
 import { prisma } from '~/server/prisma'
 
 const seasonCreateBodySchema = z
@@ -151,23 +151,6 @@ export default defineEventHandler(async (event) => {
 
     return {}
   } catch (error) {
-    await prisma.$disconnect()
-
-    if (error instanceof z.ZodError) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: error.issues.map((issue) => issue.message).join(' '),
-      })
-    } else if (error instanceof ErrorWithCode) {
-      throw createError({
-        statusCode: error.code,
-        statusMessage: error.message,
-      })
-    }
-
-    throw createError({
-      statusCode: 500,
-      statusMessage: 'Server error',
-    })
+    await errorHandler(error)
   }
 })

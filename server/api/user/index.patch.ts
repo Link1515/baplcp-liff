@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { ErrorWithCode, badRequestError } from '~/server/errors'
+import { errorHandler, badRequestError } from '~/server/errors'
 import { prisma } from '~/server/prisma'
 
 const userUpdateBodySchema = z.object({
@@ -38,23 +38,6 @@ export default defineEventHandler(async (event) => {
 
     return {}
   } catch (error) {
-    await prisma.$disconnect()
-
-    if (error instanceof z.ZodError) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: error.issues.map((issue) => issue.message).join(' '),
-      })
-    } else if (error instanceof ErrorWithCode) {
-      throw createError({
-        statusCode: error.code,
-        statusMessage: error.message,
-      })
-    }
-
-    throw createError({
-      statusCode: 500,
-      statusMessage: 'Server error',
-    })
+    await errorHandler(error)
   }
 })

@@ -1,9 +1,8 @@
 import { z } from 'zod'
 import { prisma } from '~/server/prisma'
-import { ErrorWithCode } from '~/server/errors'
-import { Prisma } from '@prisma/client'
+import { errorHandler } from '~/server/errors'
 
-const removeRecordBodySchema = z.object(
+const updateRecordBodySchema = z.object(
   {
     recordIds: z
       .string({
@@ -27,13 +26,13 @@ const removeRecordBodySchema = z.object(
   { required_error: 'JSON body is required' }
 )
 
-type RemoveRecordBodySchema = z.infer<typeof removeRecordBodySchema>
+type UpdateRecordBodySchema = z.infer<typeof updateRecordBodySchema>
 
 export default defineEventHandler(async (event) => {
   try {
-    const body = await readBody<RemoveRecordBodySchema>(event)
+    const body = await readBody<UpdateRecordBodySchema>(event)
 
-    removeRecordBodySchema.parse(body)
+    updateRecordBodySchema.parse(body)
 
     await prisma.joinRecordPerActivity.updateMany({
       where: { id: { in: body.recordIds } },
@@ -44,32 +43,6 @@ export default defineEventHandler(async (event) => {
 
     return {}
   } catch (error) {
-    console.log(error)
-    await prisma.$disconnect()
-
-    if (error instanceof z.ZodError) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: error.issues.map((issue) => issue.message).join(' '),
-      })
-    } else if (error instanceof ErrorWithCode) {
-      throw createError({
-        statusCode: error.code,
-        statusMessage: error.message,
-      })
-    } else if (
-      error instanceof Prisma.PrismaClientKnownRequestError ||
-      error instanceof Prisma.PrismaClientValidationError
-    ) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: error.message,
-      })
-    }
-
-    throw createError({
-      statusCode: 500,
-      statusMessage: 'Server error',
-    })
+    await errorHandler(error)
   }
 })
