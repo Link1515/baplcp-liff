@@ -101,7 +101,7 @@ const getRemainingTime = () => {
 
 let timer: NodeJS.Timer
 if (!beforeAllowedJoinDate.value && !afterJoinDeadline.value) {
-  getRemainingTime()
+  watch(activity, getRemainingTime)
 
   timer = setInterval(getRemainingTime, 1000)
   onUnmounted(() => clearInterval(timer))
