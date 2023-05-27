@@ -16,8 +16,8 @@ siteStore.loading = false
   <div>
     <Header>活動清單</Header>
 
-    <div class="container">
-      <div class="flex flex-col gap-4 py-8 text-center">
+    <div class="container py-8">
+      <div class="flex flex-col gap-4 text-center">
         <NuxtLink
           v-for="season in seasonList"
           :to="`/admin/season/${season.id}`"

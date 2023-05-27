@@ -96,7 +96,7 @@ const setRecordHadPaid = async (hasPaid: boolean) => {
       }}</small>
     </Header>
 
-    <div class="pb-20 pt-8">
+    <div class="py-8 pb-20">
       <ActivityInfo
         :current-join-count="joinRecord.length"
         :join-limit="activity.season.activityJoinLimit"
