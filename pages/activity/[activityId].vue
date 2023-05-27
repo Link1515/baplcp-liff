@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { compareAsc } from 'date-fns'
+import { format, compareAsc, intervalToDuration } from 'date-fns'
 import { User, Activity, Season, JoinRecordPerActivity } from '@prisma/client'
 import { useUserStore, useSiteStore } from '~/stores'
+import ModalAlert from '~/components/Modal/Alert.vue'
 
 const siteStore = useSiteStore()
 const userStore = useUserStore()
@@ -54,9 +55,14 @@ watchEffect(() => {
   siteStore.loading = false
 })
 
+/**
+ * actions
+ */
+const modalAlertIsOpened = ref(false)
+
 const join = async () => {
   try {
-    if (joinRecordPending) return
+    if (joinRecordPending.value) return
 
     siteStore.loading = true
 
@@ -69,19 +75,82 @@ const join = async () => {
     })
     await refreshJoinRecord()
 
+    modalAlertIsOpened.value = true
     siteStore.loading = false
   } catch (error) {}
 }
+
+/**
+ * remaining time
+ */
+
+const remainingTime = ref<Duration>({
+  days: 0,
+  hours: 0,
+  minutes: 0,
+  seconds: 0,
+})
+let timer: NodeJS.Timer
+
+if (!beforeAllowedJoinDate.value && !afterJoinDeadline.value) {
+  timer = setInterval(() => {
+    if (!activity.value) return
+
+    remainingTime.value = intervalToDuration({
+      start: new Date(),
+      end: new Date(activity.value.joinDeadline),
+    })
+  }, 1000)
+  onUnmounted(() => clearInterval(timer))
+}
+
+const remainingTimeStr = computed(() => {
+  const days = remainingTime.value.days
+  const hours = remainingTime.value.hours || 0
+  const minutes = remainingTime.value.minutes || 0
+  const seconds = remainingTime.value.seconds || 0
+
+  if (!days && !hours && !minutes) {
+    return `${seconds.toString().padStart(2, '0')} 秒`
+  } else if (!days && !hours) {
+    return `${minutes.toString().padStart(2, '0')} 分鐘 ${seconds
+      .toString()
+      .padStart(2, '0')} 秒`
+  } else if (!days) {
+    return `${hours.toString().padStart(2, '0')} 小時 ${minutes
+      .toString()
+      .padStart(2, '0')} 分鐘 ${seconds.toString().padStart(2, '0')} 秒`
+  }
+
+  return `${days} 天 ${hours.toString().padStart(2, '0')} 小時 ${minutes
+    .toString()
+    .padStart(2, '0')} 分鐘 ${seconds.toString().padStart(2, '0')} 秒`
+})
 </script>
 
 <template>
   <div v-if="activity && joinRecord">
-    <ActivityHeader :title="activity.season.name" :date-str="activity.date" />
+    <Header>
+      <span class="text-3xl">{{ activity.season.name }}</span>
+      <small class="text-xl">{{
+        format(new Date(activity.date), 'yyyy/MM/dd (ccc.)')
+      }}</small>
+    </Header>
+
+    <div
+      v-show="!beforeAllowedJoinDate && !afterJoinDeadline"
+      class="container bg-red-600 py-1 text-center text-white"
+    >
+      距離報名截止： {{ remainingTimeStr }}
+    </div>
+
     <div class="container py-8 pb-20">
       <ActivityInfo
         :current-join-count="joinRecord.length"
         :join-limit="activity.season.activityJoinLimit"
         :price="activity.season.pricePerActivity"
+        :start-time="activity.season.activityStartTime"
+        :end-time="activity.season.activityEndTime"
       />
 
       <ul class="divide-y divide-neutral-300">
@@ -123,5 +192,9 @@ const join = async () => {
         立即報名
       </button>
     </div>
+
+    <ModalAlert v-model="modalAlertIsOpened" @close="modalAlertIsOpened = false"
+      >報名完成後，請將當次費用轉給管理員，並通知管理員已繳費</ModalAlert
+    >
   </div>
 </template>

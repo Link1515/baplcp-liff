@@ -5,6 +5,7 @@ import { useSiteStore } from '~/stores'
 useLineLogin()
 
 const siteStore = useSiteStore()
+const route = useRoute()
 
 watch(
   () => siteStore.loading,
@@ -25,9 +26,13 @@ watch(
       <img src="/images/loading.svg" alt="loading" />
     </div>
     <div v-show="!siteStore.loading">
-      <div class="bg-blue-950">
-        <NuxtLink to="/" class="ml-3 mt-3 inline-block w-5">
-          <img src="/images/icons/home.svg" alt="home" />
+      <div class="h-8 bg-blue-950 px-3 pt-3">
+        <NuxtLink v-show="!route.path.includes('register')" to="/">
+          <img
+            src="/images/icons/home.svg"
+            class="inline-block h-full"
+            alt="home"
+          />
         </NuxtLink>
       </div>
       <slot />

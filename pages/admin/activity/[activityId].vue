@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { format } from 'date-fns'
 import { User, Activity, Season, JoinRecordPerActivity } from '@prisma/client'
 import { useSiteStore } from '~/stores'
 import ModalConfirm from '~/components/Modal/Confirm.vue'
@@ -88,13 +89,20 @@ const setRecordHadPaid = async (hasPaid: boolean) => {
 </script>
 <template>
   <div v-if="activity && joinRecord">
-    <ActivityHeader :title="activity.season.name" :date-str="activity.date" />
+    <Header>
+      <span class="text-3xl">{{ activity.season.name }}</span>
+      <small class="text-xl">{{
+        format(new Date(activity.date), 'yyyy/MM/dd (ccc.)')
+      }}</small>
+    </Header>
 
-    <div class="pb-20 pt-8">
+    <div class="py-8 pb-20">
       <ActivityInfo
         :current-join-count="joinRecord.length"
         :join-limit="activity.season.activityJoinLimit"
         :price="activity.season.pricePerActivity"
+        :start-time="activity.season.activityStartTime"
+        :end-time="activity.season.activityEndTime"
       />
 
       <ul class="mb-6 divide-y divide-neutral-300">

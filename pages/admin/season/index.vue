@@ -14,20 +14,14 @@ siteStore.loading = false
 
 <template>
   <div>
-    <header>
-      <h1
-        class="flex h-28 items-center justify-center bg-blue-950 text-center text-3xl text-white"
-      >
-        活動清單
-      </h1>
-    </header>
+    <Header>活動清單</Header>
 
-    <div class="container">
-      <div class="flex flex-col gap-4 py-8 text-center">
+    <div class="container py-8">
+      <div class="flex flex-col gap-4 text-center">
         <NuxtLink
           v-for="season in seasonList"
           :to="`/admin/season/${season.id}`"
-          class="grid place-items-center bg-slate-300 py-2"
+          class="primaryBtn"
         >
           <h2>{{ season.name }}</h2>
           <small
@@ -37,11 +31,7 @@ siteStore.loading = false
           >
         </NuxtLink>
 
-        <NuxtLink
-          to="/admin/season/create"
-          class="grid place-items-center bg-slate-300 py-2"
-          >+</NuxtLink
-        >
+        <NuxtLink to="/admin/season/create" class="primaryBtn">+</NuxtLink>
       </div>
     </div>
   </div>
