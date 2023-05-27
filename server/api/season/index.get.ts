@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
   try {
     const seasonList = await prisma.season.findMany()
     const session = await getSession(event, sessionConfig)
-    console.log(session)
+
     await prisma.$disconnect()
 
     return seasonList
