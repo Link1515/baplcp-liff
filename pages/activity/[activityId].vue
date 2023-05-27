@@ -2,6 +2,7 @@
 import { format, compareAsc } from 'date-fns'
 import { User, Activity, Season, JoinRecordPerActivity } from '@prisma/client'
 import { useUserStore, useSiteStore } from '~/stores'
+import ModalAlert from '~/components/Modal/Alert.vue'
 
 const siteStore = useSiteStore()
 const userStore = useUserStore()
@@ -54,9 +55,14 @@ watchEffect(() => {
   siteStore.loading = false
 })
 
+/**
+ * actions
+ */
+const modalAlertIsOpened = ref(false)
+
 const join = async () => {
   try {
-    if (joinRecordPending) return
+    if (joinRecordPending.value) return
 
     siteStore.loading = true
 
@@ -69,6 +75,7 @@ const join = async () => {
     })
     await refreshJoinRecord()
 
+    modalAlertIsOpened.value = true
     siteStore.loading = false
   } catch (error) {}
 }
@@ -131,5 +138,9 @@ const join = async () => {
         立即報名
       </button>
     </div>
+
+    <ModalAlert v-model="modalAlertIsOpened" @close="modalAlertIsOpened = false"
+      >報名完成後，請將當次費用轉給管理員，並通知管理員已繳費</ModalAlert
+    >
   </div>
 </template>

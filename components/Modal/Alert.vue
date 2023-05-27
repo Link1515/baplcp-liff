@@ -3,7 +3,6 @@ import { VueFinalModal } from 'vue-final-modal'
 
 const emit = defineEmits<{
   (e: 'close'): void
-  (e: 'comfirm'): void
 }>()
 </script>
 
@@ -18,9 +17,8 @@ const emit = defineEmits<{
       <p class="mb-4">
         <slot />
       </p>
-      <div class="flex gap-4">
-        <button @click="emit('comfirm')" class="bg-green-500">確定</button>
-        <button @click="emit('close')" class="bg-neutral-400">取消</button>
+      <div class="text-center">
+        <button @click="emit('close')" class="bg-green-500">確定</button>
       </div>
     </div>
   </VueFinalModal>
