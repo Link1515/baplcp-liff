@@ -24,6 +24,11 @@ export const errorHandler = async (error: unknown) => {
       statusCode: 400,
       statusMessage: error.message,
     })
+  } else if (error instanceof Error) {
+    throw createError({
+      statusCode: 500,
+      statusMessage: 'Server error.' + error.message,
+    })
   }
 
   throw createError({

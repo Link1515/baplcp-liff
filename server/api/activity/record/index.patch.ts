@@ -1,5 +1,6 @@
 import { prisma } from '~/server/prisma'
 import { errorHandler } from '~/server/errors'
+import { checkAdminStatus } from '~/server/session'
 import {
   activityRecordPatchBodySchema,
   ActivityRecordPatchBodySchema,
@@ -7,6 +8,8 @@ import {
 
 export default defineEventHandler(async (event) => {
   try {
+    await checkAdminStatus(event)
+
     const body = await readBody<ActivityRecordPatchBodySchema>(event)
 
     activityRecordPatchBodySchema.parse(body)
