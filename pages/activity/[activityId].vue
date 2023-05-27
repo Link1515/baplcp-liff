@@ -90,42 +90,24 @@ const remainingTime = ref<Duration>({
   minutes: 0,
   seconds: 0,
 })
+const getRemainingTime = () => {
+  if (!activity.value) return
+
+  remainingTime.value = intervalToDuration({
+    start: new Date(),
+    end: new Date(activity.value.joinDeadline),
+  })
+}
+
 let timer: NodeJS.Timer
-
 if (!beforeAllowedJoinDate.value && !afterJoinDeadline.value) {
-  timer = setInterval(() => {
-    if (!activity.value) return
+  getRemainingTime()
 
-    remainingTime.value = intervalToDuration({
-      start: new Date(),
-      end: new Date(activity.value.joinDeadline),
-    })
-  }, 1000)
+  timer = setInterval(getRemainingTime, 1000)
   onUnmounted(() => clearInterval(timer))
 }
 
-const remainingTimeStr = computed(() => {
-  const days = remainingTime.value.days
-  const hours = remainingTime.value.hours || 0
-  const minutes = remainingTime.value.minutes || 0
-  const seconds = remainingTime.value.seconds || 0
-
-  if (!days && !hours && !minutes) {
-    return `${seconds.toString().padStart(2, '0')} 秒`
-  } else if (!days && !hours) {
-    return `${minutes.toString().padStart(2, '0')} 分鐘 ${seconds
-      .toString()
-      .padStart(2, '0')} 秒`
-  } else if (!days) {
-    return `${hours.toString().padStart(2, '0')} 小時 ${minutes
-      .toString()
-      .padStart(2, '0')} 分鐘 ${seconds.toString().padStart(2, '0')} 秒`
-  }
-
-  return `${days} 天 ${hours.toString().padStart(2, '0')} 小時 ${minutes
-    .toString()
-    .padStart(2, '0')} 分鐘 ${seconds.toString().padStart(2, '0')} 秒`
-})
+const remainingTimeStr = computed(() => durationToStr(remainingTime.value))
 </script>
 
 <template>
