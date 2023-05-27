@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { format, compareAsc } from 'date-fns'
+import { format, compareAsc, intervalToDuration } from 'date-fns'
 import { User, Activity, Season, JoinRecordPerActivity } from '@prisma/client'
 import { useUserStore, useSiteStore } from '~/stores'
 import ModalAlert from '~/components/Modal/Alert.vue'
@@ -79,6 +79,53 @@ const join = async () => {
     siteStore.loading = false
   } catch (error) {}
 }
+
+/**
+ * remaining time
+ */
+
+const remainingTime = ref<Duration>({
+  days: 0,
+  hours: 0,
+  minutes: 0,
+  seconds: 0,
+})
+let timer: NodeJS.Timer
+
+if (!beforeAllowedJoinDate.value && !afterJoinDeadline.value) {
+  timer = setInterval(() => {
+    if (!activity.value) return
+
+    remainingTime.value = intervalToDuration({
+      start: new Date(),
+      end: new Date(activity.value.joinDeadline),
+    })
+  }, 1000)
+  onUnmounted(() => clearInterval(timer))
+}
+
+const remainingTimeStr = computed(() => {
+  const days = remainingTime.value.days
+  const hours = remainingTime.value.hours || 0
+  const minutes = remainingTime.value.minutes || 0
+  const seconds = remainingTime.value.seconds || 0
+
+  if (!days && !hours && !minutes) {
+    return `${seconds.toString().padStart(2, '0')} 秒`
+  } else if (!days && !hours) {
+    return `${minutes.toString().padStart(2, '0')} 分鐘 ${seconds
+      .toString()
+      .padStart(2, '0')} 秒`
+  } else if (!days) {
+    return `${hours.toString().padStart(2, '0')} 小時 ${minutes
+      .toString()
+      .padStart(2, '0')} 分鐘 ${seconds.toString().padStart(2, '0')} 秒`
+  }
+
+  return `${days} 天 ${hours.toString().padStart(2, '0')} 小時 ${minutes
+    .toString()
+    .padStart(2, '0')} 分鐘 ${seconds.toString().padStart(2, '0')} 秒`
+})
 </script>
 
 <template>
@@ -89,6 +136,13 @@ const join = async () => {
         format(new Date(activity.date), 'yyyy/MM/dd (ccc.)')
       }}</small>
     </Header>
+
+    <div
+      v-show="!beforeAllowedJoinDate && !afterJoinDeadline"
+      class="container bg-red-600 py-1 text-center text-white"
+    >
+      距離報名截止： {{ remainingTimeStr }}
+    </div>
 
     <div class="container py-8 pb-20">
       <ActivityInfo
