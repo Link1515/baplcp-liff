@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { compareAsc } from 'date-fns'
+import { format, compareAsc } from 'date-fns'
 import { User, Activity, Season, JoinRecordPerActivity } from '@prisma/client'
 import { useUserStore, useSiteStore } from '~/stores'
 
@@ -76,7 +76,13 @@ const join = async () => {
 
 <template>
   <div v-if="activity && joinRecord">
-    <ActivityHeader :title="activity.season.name" :date-str="activity.date" />
+    <Header>
+      <span class="text-3xl">{{ activity.season.name }}</span>
+      <small class="text-xl">{{
+        format(new Date(activity.date), 'yyyy/MM/dd (ccc.)')
+      }}</small>
+    </Header>
+
     <div class="container py-8 pb-20">
       <ActivityInfo
         :current-join-count="joinRecord.length"

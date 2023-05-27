@@ -14,13 +14,7 @@ siteStore.loading = false
 
 <template>
   <div>
-    <header>
-      <h1
-        class="flex h-28 items-center justify-center bg-blue-950 text-center text-3xl text-white"
-      >
-        活動清單
-      </h1>
-    </header>
+    <Header>活動清單</Header>
 
     <div class="container">
       <div class="flex flex-col gap-4 py-8 text-center">

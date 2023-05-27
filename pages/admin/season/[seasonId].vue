@@ -24,20 +24,18 @@ watchEffect(() => {
 
 <template>
   <div v-if="season">
-    <header>
-      <h1
-        class="flex h-28 flex-col items-center justify-center bg-blue-950 text-center text-white"
+    <Header>
+      <span class="text-3xl">{{ season.name }}</span>
+      <small class="text-xl"
+        ><span class="whitespace-nowrap">{{
+          format(new Date(season.startDate), 'yyyy/MM/dd (ccc.)')
+        }}</span>
+        ~
+        <span class="whitespace-nowrap">{{
+          format(new Date(season.endDate), 'yyyy/MM/dd (ccc.)')
+        }}</span></small
       >
-        <span class="my-auto text-3xl">{{ season.name }}</span>
-        <small class="text-xl"
-          >{{ format(new Date(season.startDate), 'yyyy/MM/dd (ccc.)') }} ~
-          {{ format(new Date(season.endDate), 'yyyy/MM/dd (ccc.)') }}</small
-        >
-        <small class="text-xl"
-          >{{ season.activityStartTime }} ~ {{ season.activityEndTime }}</small
-        >
-      </h1>
-    </header>
+    </Header>
 
     <div class="container py-8">
       <div class="flex flex-col gap-4 text-center">
