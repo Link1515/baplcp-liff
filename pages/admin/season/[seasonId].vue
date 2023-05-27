@@ -42,13 +42,13 @@ watchEffect(() => {
         <NuxtLink
           v-for="activity in season.activity"
           :to="`/admin/activity/${activity.id}`"
-          class="grid place-items-center bg-slate-300 py-2"
+          class="primaryBtn"
         >
           <h2>{{ format(new Date(activity.date), 'yyyy/MM/dd (ccc.)') }}</h2>
         </NuxtLink>
         <!-- <NuxtLink
           to="/admin/season/1233/seasonMember"
-          class="grid place-items-center bg-slate-300 py-2"
+          class="primaryBtn"
         >
           <h2>季打</h2>
         </NuxtLink> -->

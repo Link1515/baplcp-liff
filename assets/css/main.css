@@ -11,3 +11,9 @@
     @apply rounded-full bg-blue-300 px-3 py-1;
   }
 }
+
+@layer components {
+  .primaryBtn {
+    @apply grid place-items-center bg-slate-300 py-2;
+  }
+}

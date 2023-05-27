@@ -21,7 +21,7 @@ siteStore.loading = false
         <NuxtLink
           v-for="season in seasonList"
           :to="`/season/${season.id}`"
-          class="grid place-items-center bg-slate-300 py-2"
+          class="primaryBtn"
         >
           <h2>{{ season.name }}</h2>
           <small
