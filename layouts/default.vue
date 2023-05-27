@@ -6,7 +6,6 @@ useLineLogin()
 
 const siteStore = useSiteStore()
 const route = useRoute()
-console.log(route)
 
 watch(
   () => siteStore.loading,

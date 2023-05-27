@@ -101,6 +101,8 @@ const setRecordHadPaid = async (hasPaid: boolean) => {
         :current-join-count="joinRecord.length"
         :join-limit="activity.season.activityJoinLimit"
         :price="activity.season.pricePerActivity"
+        :start-time="activity.season.activityStartTime"
+        :end-time="activity.season.activityEndTime"
       />
 
       <ul class="mb-6 divide-y divide-neutral-300">

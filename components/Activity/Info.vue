@@ -3,12 +3,15 @@ defineProps<{
   currentJoinCount: number
   joinLimit: number
   price: number
+  startTime: string
+  endTime: string
 }>()
 </script>
 
 <template>
-  <h3 class="text-center text-xl">
-    報名人數： {{ currentJoinCount }}/{{ joinLimit }}
-  </h3>
-  <h3 class="mb-4 text-center text-xl">費用： {{ price }} NTD</h3>
+  <div class="mx-auto mb-4 w-fit text-xl">
+    <h3>費用： {{ price }} NTD</h3>
+    <h3>時間： {{ startTime }} ~ {{ endTime }}</h3>
+    <h3>報名人數： {{ currentJoinCount }} / {{ joinLimit }}</h3>
+  </div>
 </template>

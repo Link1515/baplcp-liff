@@ -88,6 +88,8 @@ const join = async () => {
         :current-join-count="joinRecord.length"
         :join-limit="activity.season.activityJoinLimit"
         :price="activity.season.pricePerActivity"
+        :start-time="activity.season.activityStartTime"
+        :end-time="activity.season.activityEndTime"
       />
 
       <ul class="divide-y divide-neutral-300">
