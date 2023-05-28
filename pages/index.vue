@@ -6,9 +6,7 @@ const userStore = useUserStore()
 
 <template>
   <div>
-    <Header>
-      <span class="text-5xl">BAPLCP</span>
-    </Header>
+    <Header title="BAPLCP" title-larger />
 
     <div class="container py-8">
       <div class="flex flex-col gap-4 text-center">

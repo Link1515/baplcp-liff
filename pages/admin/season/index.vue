@@ -14,7 +14,7 @@ siteStore.loading = false
 
 <template>
   <div>
-    <Header>活動清單</Header>
+    <Header title="活動清單" />
 
     <div class="container py-8">
       <div class="flex flex-col gap-4 text-center">

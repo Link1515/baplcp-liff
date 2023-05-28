@@ -26,15 +26,17 @@ watch(
       <img src="/images/loading.svg" alt="loading" />
     </div>
     <div v-show="!siteStore.loading">
-      <div class="h-8 bg-blue-950 px-3 pt-3">
-        <NuxtLink v-show="!route.path.includes('register')" to="/">
-          <img
-            src="/images/icons/home.svg"
-            class="inline-block h-full"
-            alt="home"
-          />
-        </NuxtLink>
-      </div>
+      <NuxtLink
+        v-show="!route.path.includes('register')"
+        to="/"
+        class="fixed left-3 top-3 h-5"
+      >
+        <img
+          src="/images/icons/home.svg"
+          class="inline-block h-full"
+          alt="home"
+        />
+      </NuxtLink>
       <slot />
     </div>
 

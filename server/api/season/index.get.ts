@@ -1,13 +1,9 @@
-import { prisma } from '~/server/prisma'
-import { sessionConfig } from '~/server/session'
 import { errorHandler } from '~/server/errors'
+import { seasonService } from '~/server/services'
 
 export default defineEventHandler(async (event) => {
   try {
-    const seasonList = await prisma.season.findMany()
-    const session = await getSession(event, sessionConfig)
-
-    await prisma.$disconnect()
+    const seasonList = await seasonService.findMany()
 
     return seasonList
   } catch (error) {

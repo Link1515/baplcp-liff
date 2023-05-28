@@ -1,6 +1,6 @@
 import { errorHandler, badRequestError } from '~/server/errors'
-import { prisma } from '~/server/prisma'
 import { userPatchBodySchema, UserPatchBodySchema } from '~/server/bodySchema'
+import { userService } from '~/server/services'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -13,15 +13,10 @@ export default defineEventHandler(async (event) => {
         'You should provide name or avatar to update user data'
       )
 
-    await prisma.user.update({
-      where: { id: body.userId },
-      data: {
-        name: body.name,
-        avatar: body.avatar,
-      },
+    await userService.updateById({
+      id: body.userId,
+      data: { name: body.name, avatar: body.avatar },
     })
-
-    await prisma.$disconnect()
 
     return {}
   } catch (error) {
