@@ -5,7 +5,7 @@ import {
   activityRecordPostBodySchema,
   ActivityRecordPostBodySchema,
 } from '~/server/bodySchema'
-import { userService } from '~/server/services'
+import { userService, activityService } from '~/server/services'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -16,9 +16,7 @@ export default defineEventHandler(async (event) => {
     const user = await userService.findById({ id: body.userId })
     if (!user) throw notFoundError('User not found')
 
-    const activity = await prisma.activity.findUnique({
-      where: { id: body.activityId },
-    })
+    const activity = await activityService.findById({ id: body.activityId })
     if (!activity) throw notFoundError('Activity not found')
 
     if (!user.isAdmin) {
