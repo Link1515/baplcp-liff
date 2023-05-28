@@ -4,7 +4,7 @@ import { errorHandler } from '~/server/errors'
 import { prisma } from '~/server/prisma'
 import { checkAdminStatus } from '~/server/session'
 import { seasonPostBodySchema, SeasonPostBodySchema } from '~/server/bodySchema'
-import { userService } from '~/server/services'
+import { userService, seasonService } from '~/server/services'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -19,30 +19,7 @@ export default defineEventHandler(async (event) => {
 
     seasonPostBodySchema.parse(body)
 
-    const sortedDates = body.activityDates.sort(compareAsc)
-
-    const season = await prisma.season.create({
-      data: {
-        name: body.name,
-        pricePerActivity: body.pricePerActivity,
-        enableSeasonPayment: body.enableSeasonPayment,
-        pricePerSeason: body.pricePerSeason,
-        startDate: new Date(sortedDates[0]),
-        endDate: new Date(sortedDates[sortedDates.length - 1]),
-        allowedJoinDate: subDays(new Date(sortedDates[0]), 6),
-        activityJoinLimit: body.activityJoinLimit,
-        activityStartTime: body.activityStartTime,
-        activityEndTime: body.activityEndTime,
-        activity: {
-          create: sortedDates.map((date) => ({
-            date: new Date(date),
-            allowedJoinDate: subDays(new Date(date), 5),
-            joinDeadline: subDays(new Date(date), 2),
-          })),
-        },
-      },
-      include: { activity: true },
-    })
+    const season = await seasonService.create({ data: body })
 
     // add schedule to mongo
     await prisma.schedule.createMany({
