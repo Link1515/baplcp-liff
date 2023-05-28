@@ -5,6 +5,7 @@ import {
   activityRecordPostBodySchema,
   ActivityRecordPostBodySchema,
 } from '~/server/bodySchema'
+import { userService } from '~/server/services'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -12,9 +13,7 @@ export default defineEventHandler(async (event) => {
 
     activityRecordPostBodySchema.parse(body)
 
-    const user = await prisma.user.findUnique({
-      where: { id: body.userId },
-    })
+    const user = await userService.findById({ id: body.userId })
     if (!user) throw notFoundError('User not found')
 
     const activity = await prisma.activity.findUnique({

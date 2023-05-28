@@ -4,6 +4,7 @@ import { errorHandler } from '~/server/errors'
 import { prisma } from '~/server/prisma'
 import { checkAdminStatus } from '~/server/session'
 import { seasonPostBodySchema, SeasonPostBodySchema } from '~/server/bodySchema'
+import { userService } from '~/server/services'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -66,9 +67,7 @@ export default defineEventHandler(async (event) => {
       ],
     })
 
-    const adminUsers = await prisma.user.findMany({
-      where: { isAdmin: true },
-    })
+    const adminUsers = await userService.findAdmins()
 
     season.activity.forEach(async (activity) => {
       // add schedule to app script
