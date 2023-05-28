@@ -1,4 +1,3 @@
-import { prisma } from '~/server/prisma'
 import { errorHandler, notFoundError } from '~/server/errors'
 import { seasonService } from '~/server/services'
 

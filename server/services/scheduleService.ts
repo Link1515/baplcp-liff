@@ -4,6 +4,11 @@ import { prisma } from '../prisma'
 
 export const scheduleService = {
   createGroupAlert: async (season: Season & { activity: Activity[] }) => {
+    if (!process.env.LIFF_BASE_URL)
+      throw new Error('Cannot found liff base url')
+
+    const liffBaseUrl = process.env.LIFF_BASE_URL
+
     await prisma.schedule.createMany({
       data: [
         ...season.activity.map((activity) => ({
@@ -15,13 +20,14 @@ export const scheduleService = {
             `費用：${season.pricePerActivity}\n` +
             `人數：${season.activityJoinLimit}\n\n` +
             '歡迎點此連結進入報名\n' +
-            `https://liff.line.me/1657098399-wQyYzOee/activity/${activity.id}`,
+            `${liffBaseUrl}/activity/${activity.id}`,
         })),
         ...season.activity.map((activity) => ({
           triggerDateTime: new Date(activity.joinDeadline),
           message:
             `${season.name} 截止報名！\n\n` +
-            `立即查看本次名單：\nhttps://liff.line.me/1657098399-wQyYzOee/activity/${activity.id}`,
+            '立即查看本次名單：\n' +
+            `${liffBaseUrl}/activity/${activity.id}`,
         })),
       ],
     })

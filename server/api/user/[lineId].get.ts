@@ -1,6 +1,5 @@
 import { errorHandler, notFoundError } from '~/server/errors'
 import { sessionConfig } from '~/server/session'
-import { prisma } from '~/server/prisma'
 import { userService } from '~/server/services'
 
 export default defineEventHandler(async (event) => {
