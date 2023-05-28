@@ -1,4 +1,3 @@
-import { prisma } from '~/server/prisma'
 import { errorHandler } from '~/server/errors'
 import { checkAdminStatus } from '~/server/session'
 import {
