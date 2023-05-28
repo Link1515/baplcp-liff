@@ -5,6 +5,7 @@ import {
   activityRecordPatchBodySchema,
   ActivityRecordPatchBodySchema,
 } from '~/server/bodySchema'
+import { activityRecordService } from '~/server/services'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -14,12 +15,10 @@ export default defineEventHandler(async (event) => {
 
     activityRecordPatchBodySchema.parse(body)
 
-    await prisma.joinRecordPerActivity.updateMany({
-      where: { id: { in: body.recordIds } },
+    await activityRecordService.updateManyById({
+      ids: body.recordIds,
       data: body.data,
     })
-
-    await prisma.$disconnect()
 
     return {}
   } catch (error) {

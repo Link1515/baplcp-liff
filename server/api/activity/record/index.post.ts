@@ -1,11 +1,14 @@
 import { compareAsc, format } from 'date-fns'
-import { prisma } from '~/server/prisma'
 import { errorHandler, notFoundError, badRequestError } from '~/server/errors'
 import {
   activityRecordPostBodySchema,
   ActivityRecordPostBodySchema,
 } from '~/server/bodySchema'
-import { userService, activityService } from '~/server/services'
+import {
+  userService,
+  activityService,
+  activityRecordService,
+} from '~/server/services'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -34,23 +37,16 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    const record = await prisma.joinRecordPerActivity.findFirst({
-      where: {
-        userId: body.userId,
-        activityId: body.activityId,
-      },
+    const record = await activityRecordService.findByUserIdActivityId({
+      userId: body.userId,
+      activityId: body.activityId,
     })
 
     record
-      ? await prisma.joinRecordPerActivity.update({
-          where: { id: record.id },
-          data: { active: true, joinedAt: new Date() },
+      ? await activityRecordService.updateActiveAndSetJoinedAt({
+          id: record.id,
         })
-      : await prisma.joinRecordPerActivity.create({
-          data: { ...body, joinedAt: new Date() },
-        })
-
-    await prisma.$disconnect()
+      : await activityRecordService.create({ data: body })
 
     return {}
   } catch (error) {

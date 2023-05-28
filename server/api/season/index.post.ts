@@ -1,10 +1,13 @@
 import { format } from 'date-fns'
-import { subDays, compareAsc } from 'date-fns'
 import { errorHandler } from '~/server/errors'
 import { prisma } from '~/server/prisma'
 import { checkAdminStatus } from '~/server/session'
 import { seasonPostBodySchema, SeasonPostBodySchema } from '~/server/bodySchema'
-import { userService, seasonService } from '~/server/services'
+import {
+  userService,
+  seasonService,
+  activityRecordService,
+} from '~/server/services'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -44,8 +47,6 @@ export default defineEventHandler(async (event) => {
       ],
     })
 
-    const adminUsers = await userService.findAdmins()
-
     season.activity.forEach(async (activity) => {
       // add schedule to app script
       await $fetch(appScriptUrl, {
@@ -61,12 +62,11 @@ export default defineEventHandler(async (event) => {
         },
       })
 
-      // admin autojoin
-      await prisma.joinRecordPerActivity.createMany({
-        data: adminUsers.map((user) => ({
-          userId: user.id,
-          activityId: activity.id,
-        })),
+      // admin auto join
+      const adminUsers = await userService.findAdmins()
+      await activityRecordService.createManyByUsers({
+        users: adminUsers,
+        activityId: activity.id,
       })
     })
 
