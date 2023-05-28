@@ -89,12 +89,10 @@ const setRecordHadPaid = async (hasPaid: boolean) => {
 </script>
 <template>
   <div v-if="activity && joinRecord">
-    <Header>
-      <span class="text-3xl">{{ activity.season.name }}</span>
-      <small class="text-xl">{{
-        format(new Date(activity.date), 'yyyy/MM/dd (ccc.)')
-      }}</small>
-    </Header>
+    <Header
+      :title="activity.season.name"
+      :sub-title="format(new Date(activity.date), 'yyyy/MM/dd (ccc.)')"
+    />
 
     <div class="py-8 pb-20">
       <ActivityInfo

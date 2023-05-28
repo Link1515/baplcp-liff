@@ -21,6 +21,7 @@ export const activityRecordService = {
       data: users.map((user) => ({
         userId: user.id,
         activityId,
+        joinedAt: new Date(),
       })),
     })
     await prisma.$disconnect()

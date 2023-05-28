@@ -124,7 +124,7 @@ const submit = async () => {
 
 <template>
   <div>
-    <Header>創建活動</Header>
+    <Header title="創建活動" />
 
     <div class="container flex flex-col gap-4 py-8 pb-20">
       <div>

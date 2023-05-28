@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header>會員註冊</Header>
+    <Header title="會員註冊" />
 
     <div class="container py-8">
       <h2 class="mb-4 text-xl">請選擇您的註冊身份</h2>

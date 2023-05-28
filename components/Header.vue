@@ -1,9 +1,21 @@
+<script setup lang="ts">
+defineProps<{
+  title: string
+  subTitle?: string
+  titleLarger?: boolean
+}>()
+</script>
+
 <template>
-  <header>
+  <header
+    class="flex min-h-[168px] flex-col items-center justify-center gap-2 bg-[url('/images/background/header.png')] bg-cover bg-center p-2 text-white"
+  >
     <h1
-      class="flex min-h-[112px] flex-col items-center justify-center gap-2 bg-blue-950 p-2 text-3xl text-white"
+      class="text-3xl font-bold tracking-widest"
+      :class="`${titleLarger ? 'text-5xl' : 'text-3xl'}`"
     >
-      <slot />
+      {{ title }}
     </h1>
+    <h2 v-show="subTitle">{{ subTitle }}</h2>
   </header>
 </template>
