@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+
   input {
     @apply rounded-md border border-black px-2 py-1 outline-none;
   }
@@ -15,5 +19,9 @@
 @layer components {
   .primaryBtn {
     @apply grid place-items-center bg-slate-300 py-2;
+  }
+
+  .btn-primary {
+    @apply mx-auto grid h-12 min-w-[260px] place-items-center rounded-xl bg-[#5768FF] text-white;
   }
 }
