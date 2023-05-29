@@ -31,6 +31,5 @@ export const scheduleService = {
         })),
       ],
     })
-    await prisma.$disconnect()
   },
 }

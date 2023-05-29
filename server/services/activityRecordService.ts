@@ -12,7 +12,6 @@ export const activityRecordService = {
     await prisma.joinRecordPerActivity.create({
       data: { ...data, joinedAt: new Date() },
     })
-    await prisma.$disconnect()
   },
   createManyByUsers: async (params: { users: User[]; activityId: string }) => {
     const { users, activityId } = params
@@ -24,7 +23,6 @@ export const activityRecordService = {
         joinedAt: new Date(),
       })),
     })
-    await prisma.$disconnect()
   },
   updateActiveAndSetJoinedAt: async (params: { id: string }) => {
     // which will reassign joinedAt field
@@ -34,7 +32,6 @@ export const activityRecordService = {
       where: { id },
       data: { active: true, joinedAt: new Date() },
     })
-    await prisma.$disconnect()
   },
   updateManyById: async (params: {
     ids: string[]
@@ -46,8 +43,6 @@ export const activityRecordService = {
       where: { id: { in: ids } },
       data,
     })
-
-    await prisma.$disconnect()
   },
   findManyByActivityId: async (params: { activityId: string }) => {
     const { activityId } = params
@@ -57,7 +52,6 @@ export const activityRecordService = {
       orderBy: [{ user: { isAdmin: 'desc' } }, { joinedAt: 'asc' }],
       include: { user: true },
     })
-    await prisma.$disconnect()
 
     return records
   },
@@ -70,7 +64,6 @@ export const activityRecordService = {
     const record = await prisma.joinRecordPerActivity.findFirst({
       where: { userId, activityId },
     })
-    await prisma.$disconnect()
 
     return record
   },

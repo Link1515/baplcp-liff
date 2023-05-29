@@ -4,8 +4,6 @@ import { ErrorWithCode } from '../class/ErrorWithCode'
 import { prisma } from '~/server/prisma'
 
 export const errorHandler = async (error: unknown) => {
-  await prisma.$disconnect()
-
   if (error instanceof z.ZodError) {
     throw createError({
       statusCode: 400,

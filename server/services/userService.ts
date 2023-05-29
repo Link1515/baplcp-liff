@@ -5,7 +5,6 @@ export const userService = {
   create: async (params: { data: UserPostBodySchema }) => {
     const { data } = params
     const user = await prisma.user.create({ data })
-    await prisma.$disconnect()
 
     return user
   },
@@ -16,7 +15,6 @@ export const userService = {
     const { id, data } = params
 
     await prisma.user.updateMany({ where: { id }, data })
-    await prisma.$disconnect()
   },
   findById: async (params: { id: string }) => {
     const { id } = params
@@ -24,7 +22,6 @@ export const userService = {
     const user = await prisma.user.findUnique({
       where: { id },
     })
-    await prisma.$disconnect()
 
     return user
   },
@@ -34,7 +31,6 @@ export const userService = {
     const user = await prisma.user.findUnique({
       where: { lineId },
     })
-    await prisma.$disconnect()
 
     return user
   },
@@ -42,7 +38,6 @@ export const userService = {
     const adminUsers = await prisma.user.findMany({
       where: { isAdmin: true },
     })
-    await prisma.$disconnect()
 
     return adminUsers
   },
