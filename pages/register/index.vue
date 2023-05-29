@@ -31,9 +31,9 @@ useHead({
         <StepDots :length="3" :at="0" />
       </div>
 
-      <div>
-        <button class="btn-primary">會員申請</button>
-      </div>
+      <NuxtLink to="/register/identify">
+        <BtnPrimary>會員申請</BtnPrimary>
+      </NuxtLink>
     </div>
   </div>
 </template>

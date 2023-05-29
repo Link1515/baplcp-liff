@@ -11,9 +11,9 @@
     @apply rounded-md border border-black px-2 py-1 outline-none;
   }
 
-  button {
+  /*button {
     @apply rounded-full bg-blue-300 px-3 py-1;
-  }
+  }*/
 }
 
 @layer components {

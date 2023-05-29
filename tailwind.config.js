@@ -13,6 +13,10 @@ module.exports = {
       center: true,
       padding: '1.5rem',
     },
-    extend: {},
+    extend: {
+      colors: {
+        primary: '#5768FF',
+      },
+    },
   },
 }
