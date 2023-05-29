@@ -8,7 +8,6 @@ export const activityService = {
       where: { id },
       include: { season: true },
     })
-    await prisma.$disconnect()
 
     return activity
   },

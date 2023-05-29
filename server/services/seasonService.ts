@@ -31,8 +31,6 @@ export const seasonService = {
       include: { activity: true },
     })
 
-    await prisma.$disconnect()
-
     return season
   },
   findById: async (params: { id: string }) => {
@@ -42,13 +40,11 @@ export const seasonService = {
       where: { id },
       include: { activity: true },
     })
-    await prisma.$disconnect()
 
     return season
   },
   findMany: async () => {
     const seasonList = await prisma.season.findMany()
-    await prisma.$disconnect()
 
     return seasonList
   },
