@@ -5,11 +5,12 @@
 @layer base {
   html {
     -webkit-tap-highlight-color: transparent;
+    font-family: 'Noto Sans TC', sans-serif;
   }
 
-  input {
+  /*input {
     @apply rounded-md border border-black px-2 py-1 outline-none;
-  }
+  }*/
 
   /*button {
     @apply rounded-full bg-blue-300 px-3 py-1;
