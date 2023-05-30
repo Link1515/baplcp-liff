@@ -21,17 +21,17 @@ const goToNextStep = () => {
     <h3 class="mb-4 font-medium">請選擇你的身分</h3>
 
     <div class="mb-auto flex flex-col gap-3">
-      <Radio
+      <InputRadio
         v-model="identify"
         name="identify"
         :value="Identify.LineGroupMember"
-        >BAPLCP 群內會員</Radio
+        >BAPLCP 群內會員</InputRadio
       >
-      <Radio
+      <InputRadio
         v-model="identify"
         name="identify"
         :value="Identify.InvitedByFriend"
-        >由朋友邀請</Radio
+        >由朋友邀請</InputRadio
       >
     </div>
 

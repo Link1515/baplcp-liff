@@ -12,7 +12,7 @@ useHead({
 
 <template>
   <div
-    class="h-screen bg-[url('/images/background/full.png')] bg-cover bg-center pb-20 pt-12"
+    class="min-h-screen bg-[url('/images/background/full.png')] bg-cover bg-center pb-20 pt-12"
   >
     <div class="container flex h-full flex-col">
       <div class="mb-auto flex">

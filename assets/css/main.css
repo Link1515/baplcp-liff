@@ -8,6 +8,9 @@
     font-family: 'Noto Sans TC', sans-serif;
   }
 
+  input {
+    @apply bg-white;
+  }
   /*input {
     @apply rounded-md border border-black px-2 py-1 outline-none;
   }*/
