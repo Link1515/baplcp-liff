@@ -13,7 +13,7 @@ const emit = defineEmits<{
 
 const id = `${props.name}-${uid()}`
 
-const activeValue = computed({
+const modelValue = computed({
   get() {
     return props.modelValue
   },
@@ -22,7 +22,7 @@ const activeValue = computed({
   },
 })
 
-const isActive = computed(() => activeValue.value === props.value)
+const isActive = computed(() => modelValue.value === props.value)
 </script>
 
 <template>
@@ -30,14 +30,12 @@ const isActive = computed(() => activeValue.value === props.value)
     :for="id"
     class="flex h-16 w-full items-center gap-3 rounded-lg border p-5 font-medium transition-colors"
     :class="`${
-      isActive
-        ? 'border-primary bg-primary bg-opacity-10 text-primary'
-        : 'border-[#D3D6DE]'
+      isActive ? 'border-primary bg-[#eef0ff] text-primary' : 'border-[#D3D6DE]'
     }`"
   >
     <input
       type="radio"
-      v-model="activeValue"
+      v-model="modelValue"
       :name="name"
       :value="value"
       :id="id"

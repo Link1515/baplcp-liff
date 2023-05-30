@@ -12,12 +12,12 @@ useHead({
 
 <template>
   <div
-    class="h-screen bg-[url('/images/background/full.png')] bg-cover bg-center pb-20 pt-12"
+    class="flex min-h-screen flex-col bg-[url('/images/background/full.png')] bg-cover bg-center pb-20 pt-12"
   >
-    <div class="container flex h-full flex-col">
+    <div class="container flex grow flex-col">
       <div class="mb-auto flex">
         <img src="/images/logo.svg" class="mr-auto" alt="logo" />
-        <button class="bg-transparent p-0">
+        <button>
           <img src="/images/icons/dots.svg" alt="dots" />
         </button>
       </div>
@@ -27,7 +27,7 @@ useHead({
         <p class="text-lg">申請會員以加入 BAPLCP 報名系統</p>
       </div>
 
-      <div class="mb-6">
+      <div class="my-6">
         <StepDots :length="3" :at="0" />
       </div>
 

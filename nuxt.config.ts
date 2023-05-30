@@ -14,14 +14,24 @@ export default defineNuxtConfig({
         },
       ],
       link: [
+        // google font
+        {
+          rel: 'preconnect',
+          href: 'https://fonts.googleapis.com',
+        },
+        {
+          rel: 'preconnect',
+          href: 'https://fonts.gstatic.com',
+          crossorigin: '',
+        },
+        {
+          rel: 'stylesheet',
+          href: 'https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100;300;400;500;700;900&display=swap',
+        },
+        // preload image
         {
           rel: 'preload',
           href: '/images/loading.svg',
-          as: 'image',
-        },
-        {
-          rel: 'preload',
-          href: '/images/background/header.png',
           as: 'image',
         },
       ],
