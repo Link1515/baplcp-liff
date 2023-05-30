@@ -5,7 +5,7 @@ const invitedBy = ref({ id: '', name: '' })
 
 <template>
   <div class="container flex grow flex-col pb-20 pt-8">
-    <h3 class="mb-5 font-medium">請輸入您的資訊</h3>
+    <h3 class="mb-5 font-medium text-[#334155]">請輸入您的資訊</h3>
 
     <div class="mb-auto flex flex-col gap-4">
       <div>
@@ -26,7 +26,7 @@ const invitedBy = ref({ id: '', name: '' })
       </div>
     </div>
 
-    <div class="mb-6">
+    <div class="my-6">
       <StepDots :length="3" :at="2" />
     </div>
 

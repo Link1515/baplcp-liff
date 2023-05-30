@@ -1,5 +1,12 @@
 <script setup lang="ts">
+import ModalRegisterPendingAlert from '~/components/Modal/RegisterPendingAlert.vue'
+
 const name = ref('')
+
+const modalRegisterPendingAlertIsOpened = ref(false)
+const submit = () => {
+  modalRegisterPendingAlertIsOpened.value = true
+}
 </script>
 
 <template>
@@ -10,17 +17,21 @@ const name = ref('')
       <InputText v-model="name" />
     </div>
 
-    <div class="mb-6">
+    <div class="my-6">
       <StepDots :length="3" :at="2" />
     </div>
 
     <div class="relative">
-      <BtnPrimary :disabled="name.length === 0">提交申請</BtnPrimary>
+      <BtnPrimary @click="submit" :disabled="name.length === 0"
+        >提交申請</BtnPrimary
+      >
       <NuxtLink
         to="/register/identify"
         class="absolute left-0 right-0 top-full mx-auto mt-4 w-fit text-sm font-medium text-[#8a8c90]"
         >回到上一步</NuxtLink
       >
     </div>
+
+    <ModalRegisterPendingAlert v-model="modalRegisterPendingAlertIsOpened" />
   </div>
 </template>

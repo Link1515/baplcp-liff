@@ -6,6 +6,8 @@
   html {
     -webkit-tap-highlight-color: transparent;
     font-family: 'Noto Sans TC', sans-serif;
+
+    @apply text-[#334155];
   }
 
   input {

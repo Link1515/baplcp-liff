@@ -35,7 +35,7 @@ const goToNextStep = () => {
       >
     </div>
 
-    <div class="mb-6">
+    <div class="my-6">
       <StepDots :length="3" :at="1" />
     </div>
 
