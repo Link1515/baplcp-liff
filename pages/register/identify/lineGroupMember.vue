@@ -25,7 +25,7 @@ const submit = async () => {
   })
 
   userStore.id = user.id
-  userStore.isAdmin = user.isAdmin
+  userStore.info = user
 
   siteStore.loading = false
 

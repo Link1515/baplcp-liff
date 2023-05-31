@@ -34,7 +34,7 @@ watch(
       <NuxtLink
         v-show="!route.path.includes('register')"
         to="/"
-        class="absolute left-3 top-3 h-5"
+        class="absolute left-3 top-3 z-40 h-5"
       >
         <img
           src="/images/icons/home.svg"

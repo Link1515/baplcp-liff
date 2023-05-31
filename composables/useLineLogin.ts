@@ -38,13 +38,11 @@ export const useLineLogin = () => {
       })
 
       userStore.info = user
+      userStore.id = user.id
 
       if (!user.isChecked) {
         await navigateTo('/register')
       }
-
-      userStore.id = user.id
-      userStore.isAdmin = user.isAdmin
 
       // sync user line data to db
       if (user.name !== name || user.avatar !== avatar) {
