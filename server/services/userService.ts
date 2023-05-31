@@ -41,4 +41,11 @@ export const userService = {
 
     return adminUsers
   },
+  findLineGroupMember: async () => {
+    const lineGroupMember = await prisma.user.findMany({
+      where: { isLineGroupMember: true },
+    })
+
+    return lineGroupMember
+  },
 }

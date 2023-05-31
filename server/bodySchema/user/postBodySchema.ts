@@ -22,6 +22,11 @@ export const userPostBodySchema = z.object({
       invalid_type_error: 'isLineGroupMember must be a boolean.',
     })
     .optional(),
+  invitedBy: z
+    .string({
+      invalid_type_error: 'invitedBy must be a boolean.',
+    })
+    .optional(),
 })
 
 export type UserPostBodySchema = z.infer<typeof userPostBodySchema>

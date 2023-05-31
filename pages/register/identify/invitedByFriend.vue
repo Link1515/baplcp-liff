@@ -1,31 +1,59 @@
 <script setup lang="ts">
+import { useUserStore, useSiteStore } from '~/stores'
+import { User } from '@prisma/client'
 import ModalRegisterPendingAlert from '~/components/Modal/RegisterPendingAlert.vue'
 
-const name = ref('')
+const userStore = useUserStore()
+const siteStore = useSiteStore()
+
+const { data: lineGroupMember } = await useFetch<User[]>(
+  '/api/user/lineGroupMember'
+)
+
+const realName = ref('')
 const invitedBy = ref({ id: '', name: '' })
 
 const modalRegisterPendingAlertIsOpened = ref(false)
+
+const submit = async () => {
+  siteStore.loading = true
+
+  const user = await $fetch<User>(`/api/user`, {
+    method: 'POST',
+    body: {
+      lineId: userStore.lineId,
+      realName: realName.value,
+      name: userStore.name,
+      avatar: userStore.avatar,
+      invitedBy: invitedBy.value.id,
+    },
+  })
+
+  userStore.id = user.id
+  userStore.isAdmin = user.isAdmin
+
+  siteStore.loading = false
+
+  modalRegisterPendingAlertIsOpened.value = true
+}
 </script>
 
 <template>
-  <div class="container flex grow flex-col pb-20 pt-8">
+  <div v-if="lineGroupMember" class="container flex grow flex-col pb-20 pt-8">
     <h3 class="mb-5 font-medium text-[#334155]">請輸入您的資訊</h3>
 
     <div class="mb-auto flex flex-col gap-4">
       <div>
         <small class="mb-1 block text-sm text-[#8999AE]">您的真實姓名</small>
-        <InputText v-model="name" />
+        <InputText v-model="realName" />
       </div>
       <div>
         <small class="mb-1 block text-sm text-[#8999AE]">您是誰的朋友</small>
         <InputSelect
           v-model="invitedBy"
-          :list="[
-            { id: '1', name: 'Link' },
-            { id: '2', name: 'Hank' },
-            { id: '3', name: 'Josh' },
-            { id: '4', name: 'Ben' },
-          ]"
+          :list="
+            lineGroupMember.map((user) => ({ id: user.id, name: user.name }))
+          "
         />
       </div>
     </div>
@@ -35,7 +63,9 @@ const modalRegisterPendingAlertIsOpened = ref(false)
     </div>
 
     <div class="relative">
-      <BtnPrimary :disabled="name.length === 0 || !invitedBy.id"
+      <BtnPrimary
+        @click="submit"
+        :disabled="realName.length === 0 || !invitedBy.id"
         >提交申請</BtnPrimary
       >
       <NuxtLink
