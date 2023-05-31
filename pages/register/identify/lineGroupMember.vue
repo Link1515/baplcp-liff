@@ -4,6 +4,7 @@ import ModalRegisterPendingAlert from '~/components/Modal/RegisterPendingAlert.v
 const name = ref('')
 
 const modalRegisterPendingAlertIsOpened = ref(false)
+
 const submit = () => {
   modalRegisterPendingAlertIsOpened.value = true
 }

@@ -162,7 +162,7 @@ const joinDeadlineCountdownStr = computed(() =>
     <ClientOnly>
       <div
         v-show="!beforeAllowedJoinDate && !afterJoinDeadline"
-        class="container bg-red-600 py-1 text-center text-white"
+        class="bg-red-600 py-1 text-center text-white"
       >
         距離報名截止： {{ joinDeadlineCountdownStr }}
       </div>
