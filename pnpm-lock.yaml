@@ -11,8 +11,8 @@ dependencies:
     specifier: ^4.13.0
     version: 4.13.0(prisma@4.13.0)
   '@vuepic/vue-datepicker':
-    specifier: ^4.5.0
-    version: 4.5.0(vue@3.2.47)
+    specifier: ^4.5.1
+    version: 4.5.1(vue@3.2.47)
   date-fns:
     specifier: ^2.29.3
     version: 2.29.3
@@ -1869,8 +1869,8 @@ packages:
   /@vue/shared@3.2.47:
     resolution: {integrity: sha512-BHGyyGN3Q97EZx0taMQ+OLNuZcW3d37ZEVmEAyeoA9ERdGvm9Irc/0Fua8SNyOtV1w6BS4q25wbMzJujO9HIfQ==}
 
-  /@vuepic/vue-datepicker@4.5.0(vue@3.2.47):
-    resolution: {integrity: sha512-SCh1j8D6xbfe1lCkCYB5vzr0GVePA537xZZrScwhIdICEtu+0tGcNgMv0EeFFqQzGyHB5rcZMs4EebI6dOmxxQ==}
+  /@vuepic/vue-datepicker@4.5.1(vue@3.2.47):
+    resolution: {integrity: sha512-zdG37Q8iuwTPWnQEI9/WvabqmrDDfDLgdXUTW08FXHSbiHuNN2S+bVeN1Wm9yeD+onHgzEn6DiW6J3fYXEfa0Q==}
     engines: {node: '>=14'}
     peerDependencies:
       vue: '>=3.2.0'

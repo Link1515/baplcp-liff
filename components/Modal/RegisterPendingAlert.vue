@@ -1,5 +1,9 @@
 <script setup lang="ts">
 import { VueFinalModal } from 'vue-final-modal'
+
+defineEmits<{
+  (e: 'close'): void
+}>()
 </script>
 
 <template>
@@ -16,10 +20,12 @@ import { VueFinalModal } from 'vue-final-modal'
         <img src="/images/icons/info.svg" alt="info" />
       </div>
       <h3 class="mb-2 text-xl font-semibold">審核中</h3>
-      <small class="mb-6 text-sm text-[#64748B]"
+      <small class="mb-2 text-sm text-[#64748B]"
         >您的申請正在審核中，請勿重複申請並耐心等候通知，謝謝！</small
       >
-      <BtnPrimary>離開網頁</BtnPrimary>
+      <small class="text-sm text-[#64748B]"
+        >* 申請通過後，下次進入系統將自動登入</small
+      >
     </div>
   </VueFinalModal>
 </template>

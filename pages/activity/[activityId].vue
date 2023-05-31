@@ -11,6 +11,9 @@ const activityId = route.params.activityId as string
 
 siteStore.loading = true
 
+// only update time when important moment
+const currentDateTime = ref(Date.now())
+
 /**
  * activity data
  */
@@ -20,12 +23,18 @@ const { data: activity, pending: activityPending } = useFetch<
 
 const beforeAllowedJoinDate = computed(() =>
   activity.value
-    ? compareAsc(new Date(activity.value.allowedJoinDate), new Date()) > 0
+    ? compareAsc(
+        new Date(activity.value.allowedJoinDate),
+        new Date(currentDateTime.value)
+      ) > 0
     : false
 )
 const afterJoinDeadline = computed(() =>
   activity.value
-    ? compareAsc(new Date(), new Date(activity.value.joinDeadline)) > 0
+    ? compareAsc(
+        new Date(currentDateTime.value),
+        new Date(activity.value.joinDeadline)
+      ) > 0
     : false
 )
 
@@ -81,33 +90,66 @@ const join = async () => {
 }
 
 /**
- * remaining time
+ * join start reactive
+ */
+let joinStartTimer: NodeJS.Timer
+
+watchEffect(() => {
+  if (beforeAllowedJoinDate.value && activity.value) {
+    const remainingTime =
+      new Date(activity.value.allowedJoinDate).getTime() - Date.now()
+
+    clearTimeout(joinStartTimer)
+
+    joinStartTimer = setTimeout(() => {
+      currentDateTime.value = Date.now()
+    }, remainingTime)
+  }
+})
+
+onUnmounted(() => clearTimeout(joinStartTimer))
+
+/**
+ * join deadline countdown
  */
 
-const remainingTime = ref<Duration>({
+let joinDeadlineTimer: NodeJS.Timer
+
+const joinDeadlineCountdown = ref<Duration>({
   days: 0,
   hours: 0,
   minutes: 0,
   seconds: 0,
 })
-const getRemainingTime = () => {
+
+const updateJoinDeadlineCountdown = () => {
   if (!activity.value) return
 
-  remainingTime.value = intervalToDuration({
+  joinDeadlineCountdown.value = intervalToDuration({
     start: new Date(),
     end: new Date(activity.value.joinDeadline),
   })
+
+  if (Date.now() > new Date(activity.value.joinDeadline).getTime()) {
+    currentDateTime.value = Date.now()
+    clearInterval(joinDeadlineTimer)
+  }
 }
 
-let timer: NodeJS.Timer
-if (!beforeAllowedJoinDate.value && !afterJoinDeadline.value) {
-  watch(activity, getRemainingTime)
+watchEffect(() => {
+  if (!beforeAllowedJoinDate.value && !afterJoinDeadline.value) {
+    clearInterval(joinDeadlineTimer)
 
-  timer = setInterval(getRemainingTime, 1000)
-  onUnmounted(() => clearInterval(timer))
-}
+    updateJoinDeadlineCountdown()
+    joinDeadlineTimer = setInterval(updateJoinDeadlineCountdown, 1000)
+  }
+})
 
-const remainingTimeStr = computed(() => durationToStr(remainingTime.value))
+onUnmounted(() => clearInterval(joinDeadlineTimer))
+
+const joinDeadlineCountdownStr = computed(() =>
+  durationToStr(joinDeadlineCountdown.value)
+)
 </script>
 
 <template>
@@ -117,12 +159,14 @@ const remainingTimeStr = computed(() => durationToStr(remainingTime.value))
       :sub-title="format(new Date(activity.date), 'yyyy/MM/dd (ccc.)')"
     />
 
-    <div
-      v-show="!beforeAllowedJoinDate && !afterJoinDeadline"
-      class="container bg-red-600 py-1 text-center text-white"
-    >
-      距離報名截止： {{ remainingTimeStr }}
-    </div>
+    <ClientOnly>
+      <div
+        v-show="!beforeAllowedJoinDate && !afterJoinDeadline"
+        class="bg-red-600 py-1 text-center text-white"
+      >
+        距離報名截止： {{ joinDeadlineCountdownStr }}
+      </div>
+    </ClientOnly>
 
     <div class="container py-8 pb-20">
       <ActivityInfo
@@ -149,29 +193,31 @@ const remainingTimeStr = computed(() => durationToStr(remainingTime.value))
       </ul>
     </div>
 
-    <div
-      class="fixed bottom-0 flex h-16 w-full items-center justify-center bg-slate-300 px-4"
-    >
-      <span
-        v-if="beforeAllowedJoinDate"
-        class="rounded-full bg-neutral-400 px-4 py-1"
-        >尚未開放</span
+    <ClientOnly>
+      <div
+        class="fixed bottom-0 flex h-16 w-full items-center justify-center bg-slate-300 px-4"
       >
-      <span
-        v-else-if="afterJoinDeadline"
-        class="rounded-full bg-neutral-400 px-4 py-1"
-        >報名已截止</span
-      >
-      <span
-        v-else-if="userCurrentRecord"
-        class="rounded-full bg-green-500 px-4 py-1"
-      >
-        已報名
-      </span>
-      <button v-else @click="join" class="rounded-full bg-green-500">
-        立即報名
-      </button>
-    </div>
+        <span
+          v-if="beforeAllowedJoinDate"
+          class="rounded-full bg-neutral-400 px-4 py-1"
+          >尚未開放</span
+        >
+        <span
+          v-else-if="afterJoinDeadline"
+          class="rounded-full bg-neutral-400 px-4 py-1"
+          >報名已截止</span
+        >
+        <span
+          v-else-if="userCurrentRecord"
+          class="rounded-full bg-green-500 px-4 py-1"
+        >
+          已報名
+        </span>
+        <button v-else @click="join" class="rounded-full bg-green-500">
+          立即報名
+        </button>
+      </div>
+    </ClientOnly>
 
     <ModalAlert v-model="modalAlertIsOpened" @close="modalAlertIsOpened = false"
       >報名完成後，請將當次費用轉給管理員，並通知管理員已繳費</ModalAlert

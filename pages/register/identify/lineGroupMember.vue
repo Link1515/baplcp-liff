@@ -1,10 +1,34 @@
 <script setup lang="ts">
+import { User } from '@prisma/client'
+import { useSiteStore, useUserStore } from '~/stores'
 import ModalRegisterPendingAlert from '~/components/Modal/RegisterPendingAlert.vue'
 
-const name = ref('')
+const siteStore = useSiteStore()
+const userStore = useUserStore()
+
+const realName = ref('')
 
 const modalRegisterPendingAlertIsOpened = ref(false)
-const submit = () => {
+
+const submit = async () => {
+  siteStore.loading = true
+
+  const user = await $fetch<User>(`/api/user`, {
+    method: 'POST',
+    body: {
+      lineId: userStore.lineId,
+      realName: realName.value,
+      name: userStore.name,
+      avatar: userStore.avatar,
+      isLineGroupMember: true,
+    },
+  })
+
+  userStore.id = user.id
+  userStore.isAdmin = user.isAdmin
+
+  siteStore.loading = false
+
   modalRegisterPendingAlertIsOpened.value = true
 }
 </script>
@@ -14,7 +38,7 @@ const submit = () => {
     <h3 class="mb-4 font-medium">請輸入您的真實姓名</h3>
 
     <div class="mb-auto">
-      <InputText v-model="name" />
+      <InputText v-model="realName" />
     </div>
 
     <div class="my-6">
@@ -22,7 +46,7 @@ const submit = () => {
     </div>
 
     <div class="relative">
-      <BtnPrimary @click="submit" :disabled="name.length === 0"
+      <BtnPrimary @click="submit" :disabled="realName.length === 0"
         >提交申請</BtnPrimary
       >
       <NuxtLink

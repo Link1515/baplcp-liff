@@ -1,6 +1,10 @@
 <script setup lang="ts">
+import ModalRegisterPendingAlert from '~/components/Modal/RegisterPendingAlert.vue'
+
 const name = ref('')
 const invitedBy = ref({ id: '', name: '' })
+
+const modalRegisterPendingAlertIsOpened = ref(false)
 </script>
 
 <template>
@@ -40,5 +44,7 @@ const invitedBy = ref({ id: '', name: '' })
         >回到上一步</NuxtLink
       >
     </div>
+
+    <ModalRegisterPendingAlert v-model="modalRegisterPendingAlertIsOpened" />
   </div>
 </template>

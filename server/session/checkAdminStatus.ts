@@ -7,5 +7,5 @@ export const checkAdminStatus = async (
   const session = await getSession(event, sessionConfig)
   if (!session.data.user)
     throw badRequestError('Cannot get user status from Session cookie')
-  if (!session.data.user.isAdmin) throw forbiddenError
+  if (!session.data.user.isAdmin) throw forbiddenError()
 }

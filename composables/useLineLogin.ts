@@ -1,21 +1,10 @@
-import { useModal } from 'vue-final-modal'
 import { User } from '@prisma/client'
 import { useUserStore, useSiteStore } from '~/stores'
-import ModalCreateUser from '~/components/Modal/CreateUser.vue'
 
 export const useLineLogin = () => {
   const nuxtApp = useNuxtApp()
   const userStore = useUserStore()
   const siteStore = useSiteStore()
-
-  const modalCreateUser = useModal({
-    component: ModalCreateUser,
-    attrs: {
-      onClose() {
-        modalCreateUser.close()
-      },
-    },
-  })
 
   siteStore.loading = true
 
@@ -43,7 +32,7 @@ export const useLineLogin = () => {
         onResponseError: async (error) => {
           if (error.response.status === 404) {
             // if user not found then create one
-            modalCreateUser.open()
+            await navigateTo('/register')
           }
         },
       })
@@ -62,7 +51,7 @@ export const useLineLogin = () => {
           },
         })
       }
+      siteStore.loading = false
     } catch (error) {}
-    siteStore.loading = false
   })
 }

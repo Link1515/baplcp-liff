@@ -1,19 +1,28 @@
 <script setup lang="ts">
-useHead({
-  link: [
-    {
-      rel: 'preload',
-      href: '/images/background/full.png',
-      as: 'image',
-    },
-  ],
+import { useSiteStore } from '~/stores'
+
+const siteStore = useSiteStore()
+const loadBg = ref(false)
+
+onMounted(() => {
+  loadBg.value = true
 })
+
+const showPage = () => {
+  siteStore.loading = false
+}
 </script>
 
 <template>
-  <div
-    class="flex min-h-screen flex-col bg-[url('/images/background/full.png')] bg-cover bg-center pb-20 pt-12"
-  >
+  <div class="relative flex min-h-screen flex-col pb-20 pt-12">
+    <div v-if="loadBg" class="absolute left-0 top-0 -z-10 h-full w-full">
+      <img
+        @load="showPage"
+        src="/images/background/full.png"
+        class="h-full w-full object-cover object-center"
+        alt="bg"
+      />
+    </div>
     <div class="container flex grow flex-col">
       <div class="mb-auto flex">
         <img src="/images/logo.svg" class="mr-auto" alt="logo" />

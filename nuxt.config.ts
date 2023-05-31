@@ -34,6 +34,11 @@ export default defineNuxtConfig({
           href: '/images/loading.svg',
           as: 'image',
         },
+        {
+          rel: 'preload',
+          href: '/images/background/header.png',
+          as: 'image',
+        },
       ],
     },
   },
