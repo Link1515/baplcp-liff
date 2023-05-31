@@ -1,7 +1,13 @@
 <script setup lang="ts">
-import { useSiteStore } from '~/stores'
+import { useSiteStore, useUserStore } from '~/stores'
+import ModalRegisterPendingAlert from '~/components/Modal/RegisterPendingAlert.vue'
 
 const siteStore = useSiteStore()
+const userStore = useUserStore()
+
+const modalRegisterPendingAlertIsOpened = computed(() =>
+  userStore.info ? !userStore.info.isChecked : false
+)
 const loadBg = ref(false)
 
 onMounted(() => {
@@ -44,5 +50,7 @@ const showPage = () => {
         <BtnPrimary>會員申請</BtnPrimary>
       </NuxtLink>
     </div>
+
+    <ModalRegisterPendingAlert v-model="modalRegisterPendingAlertIsOpened" />
   </div>
 </template>

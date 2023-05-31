@@ -37,6 +37,12 @@ export const useLineLogin = () => {
         },
       })
 
+      userStore.info = user
+
+      if (!user.isChecked) {
+        await navigateTo('/register')
+      }
+
       userStore.id = user.id
       userStore.isAdmin = user.isAdmin
 
