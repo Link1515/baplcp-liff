@@ -2,7 +2,7 @@
 import { ModalsContainer } from 'vue-final-modal'
 import { useSiteStore } from '~/stores'
 
-useLineLogin()
+// useLineLogin()
 
 const siteStore = useSiteStore()
 const route = useRoute()
