@@ -94,7 +94,7 @@ model JoinRecordPerActivity {
 
 model Schedule {
   id String @id @default(auto()) @map("_id") @db.ObjectId
-  message String
+  messageJson Json 
   triggerDateTime DateTime
 
   createdAt DateTime @default(now())
