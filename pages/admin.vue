@@ -5,7 +5,7 @@ const userStore = useUserStore()
 const route = useRoute()
 
 ;(() => {
-  if (!userStore.isAdmin) return navigateTo('/')
+  if (!userStore.info?.isAdmin) return navigateTo('/')
   if (/admin\/?/.test(route.path)) return navigateTo('/admin/season')
 })()
 </script>

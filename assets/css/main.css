@@ -3,17 +3,31 @@
 @tailwind utilities;
 
 @layer base {
-  input {
-    @apply rounded-md border border-black px-2 py-1 outline-none;
+  html {
+    -webkit-tap-highlight-color: transparent;
+    font-family: 'Noto Sans TC', sans-serif;
+
+    @apply text-[#334155];
   }
 
-  button {
-    @apply rounded-full bg-blue-300 px-3 py-1;
+  input {
+    @apply bg-white;
   }
+  /*input {
+    @apply rounded-md border border-black px-2 py-1 outline-none;
+  }*/
+
+  /*button {
+    @apply rounded-full bg-blue-300 px-3 py-1;
+  }*/
 }
 
 @layer components {
   .primaryBtn {
     @apply grid place-items-center bg-slate-300 py-2;
+  }
+
+  .btn-primary {
+    @apply mx-auto grid h-12 min-w-[260px] place-items-center rounded-xl bg-[#5768FF] text-white;
   }
 }

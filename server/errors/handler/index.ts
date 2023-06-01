@@ -12,7 +12,7 @@ export const errorHandler = async (error: unknown) => {
   } else if (error instanceof ErrorWithCode) {
     throw createError({
       statusCode: error.code,
-      statusMessage: error.message,
+      message: error.message,
     })
   } else if (
     error instanceof Prisma.PrismaClientKnownRequestError ||
@@ -20,17 +20,17 @@ export const errorHandler = async (error: unknown) => {
   ) {
     throw createError({
       statusCode: 400,
-      statusMessage: error.message,
+      message: error.message,
     })
   } else if (error instanceof Error) {
     throw createError({
       statusCode: 500,
-      statusMessage: 'Server error.' + error.message,
+      message: 'Server error.' + error.message,
     })
   }
 
   throw createError({
     statusCode: 500,
-    statusMessage: 'Server error',
+    message: 'Server error',
   })
 }

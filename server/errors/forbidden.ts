@@ -1,3 +1,4 @@
 import { ErrorWithCode } from './class/ErrorWithCode'
 
-export const forbiddenError = new ErrorWithCode('FORBIDDEN', 'forbidden', 401)
+export const forbiddenError = (message?: string) =>
+  new ErrorWithCode('FORBIDDEN', message ?? 'forbidden', 401)

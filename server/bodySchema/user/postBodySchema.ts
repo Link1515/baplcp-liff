@@ -17,6 +17,16 @@ export const userPostBodySchema = z.object({
     required_error: 'avatar is required.',
     invalid_type_error: 'avatar must be a string.',
   }),
+  isLineGroupMember: z
+    .boolean({
+      invalid_type_error: 'isLineGroupMember must be a boolean.',
+    })
+    .optional(),
+  invitedBy: z
+    .string({
+      invalid_type_error: 'invitedBy must be a boolean.',
+    })
+    .optional(),
 })
 
 export type UserPostBodySchema = z.infer<typeof userPostBodySchema>
