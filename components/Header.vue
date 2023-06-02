@@ -17,10 +17,7 @@ defineProps<{
         alt="header-bg"
       />
     </div>
-    <h1
-      class="font-bold tracking-widest"
-      :class="`${titleLarger ? 'text-5xl' : 'text-3xl'}`"
-    >
+    <h1 class="font-bold" :class="`${titleLarger ? 'text-5xl' : 'text-3xl'}`">
       {{ title }}
     </h1>
     <h2 v-show="subTitle">{{ subTitle }}</h2>
